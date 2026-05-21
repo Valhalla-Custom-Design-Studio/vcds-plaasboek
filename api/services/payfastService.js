@@ -1,11 +1,10 @@
 const crypto = require('crypto');
 const axios = require('axios');
 
-// Plaasboek™ Subscription Tiers (ZAR cents)
 const TIERS = {
-  BASIC: 49,
-  FARM: 149,
-  AGRIPRO: 499,
+  BASIC: 4900,
+  FARM: 14900,
+  AGRIPRO: 49900,
 };
 
 const PAYFAST_CONFIG = {
@@ -18,14 +17,11 @@ const PAYFAST_CONFIG = {
   notifyUrl: process.env.PAYFAST_NOTIFY_URL || 'https://api.vcds.co.za/api/payments/notify',
 };
 
-/**
- * Generate MD5 signature for Payfast payload
- */
 function generateSignature(data, passphrase = null) {
   let pfOutput = '';
   for (const key in data) {
-    if (data[key] !== '') {
-      pfOutput += `${key}=${encodeURIComponent(data[key]).replace(/%20/g, '+')}&`;
+    if (data[key] !== '' && key !== 'signature') {
+      pfOutput += `${key}=${encodeURIComponent(String(data[key])).replace(/%20/g, '+')}&`;
     }
   }
   if (passphrase) {
@@ -36,13 +32,11 @@ function generateSignature(data, passphrase = null) {
   return crypto.createHash('md5').update(pfOutput).digest('hex');
 }
 
-/**
- * Build Payfast payment payload
- * @param {userId, email, firstName, lastName, tier, subscriptionType} params
- */
 function buildPaymentPayload({ userId, email, firstName, lastName, tier, subscriptionType = 'subscription' }) {
-  const amount = TIERS[tier.toUpperCase()];
-  if (!amount) throw new Error(`Invalid tier: ${tier}`);
+  const tierKey = tier.toUpperCase();
+  const amount = TIERS[tierKey];
+  if (amount === undefined) throw new Error(`Invalid tier: ${tier}. Valid: ${Object.keys(TIERS).join(', ')}`);
+  if (parseInt(amount) === 0) return { free: true, tier: tierKey };
 
   const data = {
     merchant_id: PAYFAST_CONFIG.merchantId,
@@ -50,21 +44,21 @@ function buildPaymentPayload({ userId, email, firstName, lastName, tier, subscri
     return_url: PAYFAST_CONFIG.returnUrl,
     cancel_url: PAYFAST_CONFIG.cancelUrl,
     notify_url: PAYFAST_CONFIG.notifyUrl,
-    name_first: firstName,
-    name_last: lastName,
+    name_first: firstName || 'User',
+    name_last: lastName || '',
     email_address: email,
     m_payment_id: `${userId}-${Date.now()}`,
     amount: (parseInt(amount) / 100).toFixed(2),
-    item_name: `Plaasboek™ ${tier} Subscription`,
-    item_description: `Monthly subscription to Plaasboek™ - ${tier} tier`,
+    item_name: `Plaasboek™ ${tierKey} Subscription`,
+    item_description: `Monthly subscription - ${tierKey} tier`,
     custom_int1: userId,
-    custom_str1: tier,
-    custom_str2: 'Plaasboek™',
-    subscription_type: subscriptionType === 'subscription' ? 1 : 0,
+    custom_str1: tierKey,
+    custom_str2: 'vcds-plaasboek',
+    subscription_type: 1,
     billing_date: new Date().toISOString().split('T')[0],
     recurring_amount: (parseInt(amount) / 100).toFixed(2),
-    frequency: 3, // Monthly
-    cycles: 0,    // Indefinite
+    frequency: 3,
+    cycles: 0,
   };
 
   data.signature = generateSignature(data, PAYFAST_CONFIG.passphrase);
@@ -76,32 +70,10 @@ function buildPaymentPayload({ userId, email, firstName, lastName, tier, subscri
   return { payload: data, redirectUrl: baseUrl };
 }
 
-/**
- * Validate Payfast ITN (Instant Transaction Notification)
- */
 async function validateITN(pfData, pfParamString) {
-  // Step 1: Verify signature
   const signature = generateSignature(pfData, PAYFAST_CONFIG.passphrase);
-  if (signature !== pfData.signature) {
-    throw new Error('Invalid ITN signature');
-  }
+  if (signature !== pfData.signature) throw new Error('Invalid ITN signature');
 
-  // Step 2: Verify source IP (Payfast IPs)
-  const validHosts = [
-    'www.payfast.co.za', 'sandbox.payfast.co.za',
-    'w1w.payfast.co.za', 'w2w.payfast.co.za'
-  ];
-
-  // Step 3: Verify payment amount matches expected
-  const expectedAmount = TIERS[pfData.custom_str1?.toUpperCase()];
-  if (expectedAmount) {
-    const pfAmount = parseFloat(pfData.amount_gross) * 100;
-    if (Math.abs(pfAmount - parseInt(expectedAmount)) > 1) {
-      throw new Error('Amount mismatch');
-    }
-  }
-
-  // Step 4: Verify with Payfast server
   const verifyUrl = PAYFAST_CONFIG.sandbox
     ? 'https://sandbox.payfast.co.za/eng/query/validate'
     : 'https://www.payfast.co.za/eng/query/validate';
@@ -110,10 +82,7 @@ async function validateITN(pfData, pfParamString) {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   });
 
-  if (response.data !== 'VALID') {
-    throw new Error('Payfast validation failed');
-  }
-
+  if (response.data !== 'VALID') throw new Error('Payfast server validation failed');
   return true;
 }
 
