@@ -1,9 +1,13 @@
 node_modules/
 .env
 .env.local
+.env.production
 *.log
 .DS_Store
 build/
 dist/
 coverage/
 .expo/
+android/
+ios/
+*.keystore
