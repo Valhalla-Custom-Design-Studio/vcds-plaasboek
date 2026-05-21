@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "Plaasboek",
+    "slug": "plaasboek",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#33691E"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "co.za.vcds.plaasboek",
+      "buildNumber": "1"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#33691E"
+      },
+      "package": "co.za.vcds.plaasboek",
+      "versionCode": 1,
+      "permissions": [
+        "INTERNET"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "name": "Plaasboek",
+      "themeColor": "#33691E"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "vcds-plaasboek"
+      },
+      "subdomain": "plaasboek.vcds.co.za",
+      "payfastMerchantId": "11910323"
+    }
+  }
+}
