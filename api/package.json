@@ -1,0 +1,25 @@
+{
+  "name": "vcds-plaasboek-api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node api/server.js",
+    "dev": "nodemon api/server.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "helmet": "^8.0.0",
+    "dotenv": "^16.4.7",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
+  }
+}
