@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node api/server.js",
     "dev": "nodemon api/server.js",
-    "test": "jest"
+    "migrate": "node database/migrate.js",
+    "test": "jest --testPathPattern=tests/"
   },
   "dependencies": {
     "express": "^4.21.2",
@@ -15,7 +16,7 @@
     "jsonwebtoken": "^9.0.2",
     "bcryptjs": "^2.4.3",
     "pg": "^8.13.1",
-    "pg-hstore": "^2.3.4"
+    "axios": "^1.7.9"
   },
   "devDependencies": {
     "nodemon": "^3.1.7",
