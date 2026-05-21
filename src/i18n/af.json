@@ -1,0 +1,43 @@
+{
+  "common": {
+    "loading": "Laai tans...",
+    "error": "Iets het verkeerd gegaan. Probeer asseblief weer.",
+    "retry": "Probeer weer",
+    "cancel": "Kanselleer",
+    "confirm": "Bevestig",
+    "save": "Stoor",
+    "close": "Sluit",
+    "back": "Terug",
+    "next": "Volgende",
+    "submit": "Dien in",
+    "currency": "ZAR",
+    "dateFormat": "DD/MM/JJJJ",
+    "units": "metriek"
+  },
+  "auth": {
+    "login": "Teken In",
+    "logout": "Teken Uit",
+    "register": "Registreer",
+    "email": "E-posadres",
+    "password": "Wagwoord",
+    "forgotPassword": "Wagwoord vergeet?",
+    "resetPassword": "Stel Wagwoord Terug"
+  },
+  "payment": {
+    "subscribe": "Teken Nou In",
+    "changePlan": "Verander Plan",
+    "cancelSubscription": "Kanselleer Intekening",
+    "payWith": "Betaal met PayFast",
+    "eft": "EFT / Bankoordrag",
+    "invoiceReady": "Jou SARS-voldoenende faktuur is gereed",
+    "paymentSuccess": "Betaling suksesvol!",
+    "paymentFailed": "Betaling het misluk. Probeer asseblief weer.",
+    "freeTrial": "Begin 7-Dag Gratis Proeftydperk"
+  },
+  "accessibility": {
+    "skipToMain": "Spring na hoofinhoud",
+    "langToggle": "Skakel na Engels",
+    "closeModal": "Sluit venster",
+    "loading": "Inhoud laai tans, wag asseblief"
+  }
+}
