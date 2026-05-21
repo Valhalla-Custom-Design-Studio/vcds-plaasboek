@@ -1,0 +1,43 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong. Please try again.",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "currency": "ZAR",
+    "dateFormat": "DD/MM/YYYY",
+    "units": "metric"
+  },
+  "auth": {
+    "login": "Log In",
+    "logout": "Log Out",
+    "register": "Register",
+    "email": "Email Address",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password"
+  },
+  "payment": {
+    "subscribe": "Subscribe Now",
+    "changePlan": "Change Plan",
+    "cancelSubscription": "Cancel Subscription",
+    "payWith": "Pay with PayFast",
+    "eft": "EFT / Bank Transfer",
+    "invoiceReady": "Your SARS-compliant invoice is ready",
+    "paymentSuccess": "Payment successful!",
+    "paymentFailed": "Payment failed. Please try again.",
+    "freeTrial": "Start 7-Day Free Trial"
+  },
+  "accessibility": {
+    "skipToMain": "Skip to main content",
+    "langToggle": "Switch to Afrikaans",
+    "closeModal": "Close modal",
+    "loading": "Content is loading, please wait"
+  }
+}
