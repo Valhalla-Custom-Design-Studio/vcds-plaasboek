@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://vcds_user:vcds_dev@db:5432/vcds_plaasboek_dev
+      - JWT_SECRET=dev_secret
+      - PAYFAST_MERCHANT_ID=10000100
+      - PAYFAST_MERCHANT_KEY=46f0cd694581a
+      - PAYFAST_PASSPHRASE=
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./api:/app/api
+      - ./database:/app/database
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: vcds_user
+      POSTGRES_PASSWORD: vcds_dev
+      POSTGRES_DB: vcds_plaasboek_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vcds_user"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
