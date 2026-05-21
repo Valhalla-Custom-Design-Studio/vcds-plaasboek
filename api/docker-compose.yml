@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://vcds_user:vcds_pass@db:5432/vcds_db
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: vcds_user
+      POSTGRES_PASSWORD: vcds_pass
+      POSTGRES_DB: vcds_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vcds_user -d vcds_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+volumes:
+  postgres_data:
