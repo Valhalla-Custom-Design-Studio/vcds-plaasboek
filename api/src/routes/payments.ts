@@ -17,7 +17,7 @@ paymentsRouter.post('/itn', async (req: Request, res: Response) => {
         [userId, planId, parseFloat(amount_gross), 'completed', req.body.pf_payment_id]
       );
       await pool.query(
-        'INSERT INTO subscriptions (user_id, plan_id, status, started_at, next_billing_date) VALUES ($1,$2,$3,NOW(),NOW() + INTERVAL '1 month') ON CONFLICT (user_id) DO UPDATE SET plan_id=$2, status=$3, next_billing_date=NOW() + INTERVAL '1 month'',
+        `INSERT INTO subscriptions (user_id, plan_id, status, started_at, next_billing_date) VALUES ($1,$2,$3,NOW(),NOW() + INTERVAL '1 month') ON CONFLICT (user_id) DO UPDATE SET plan_id=$2, status=$3, next_billing_date=NOW() + INTERVAL '1 month'`,
         [userId, planId, 'active']
       );
       await pool.query('UPDATE users SET tier = (SELECT tier_name FROM plans WHERE id = $1) WHERE id = $2', [planId, userId]);
