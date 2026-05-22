@@ -15,19 +15,20 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
       - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: "--prod"
+        run: vercel --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Notify Slack on Deploy
         if: always()
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'vcds-ops'
-          slack-message: "${{ job.status == 'success' && '✅' || '❌' }} *${{ github.repository }}* deployed to Vercel\nBranch: `${{ github.ref_name }}`"
+          slack-message: "${{ job.status == 'success' && '✅' || '❌' }} *${{ github.repository }}* deployed\nBranch: `${{ github.ref_name }}`"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
