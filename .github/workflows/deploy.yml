@@ -3,8 +3,6 @@ name: Deploy to Vercel
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   deploy:
@@ -30,6 +28,6 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'vcds-ops'
-          slack-message: "${{ job.status == 'success' && '✅' || '❌' }} *${{ github.repository }}* deploy ${{ job.status }}\nBranch: `${{ github.ref_name }}`"
+          slack-message: "${{ job.status == 'success' && '✅' || '❌' }} *${{ github.repository }}* deployed to Vercel\nBranch: `${{ github.ref_name }}`"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
