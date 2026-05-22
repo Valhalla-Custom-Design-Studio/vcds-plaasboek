@@ -1,0 +1,9 @@
+{
+  "name": "plaasboek",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo No tests",
+    "lint": "echo No lint"
+  },
+  "dependencies": {}
+}
