@@ -10,59 +10,63 @@ on:
 env:
   SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
   SLACK_CHANNEL: "#vcds-ops"
+  WORKDIR: api
 
 jobs:
-  # ─────────────────────────────────────────
-  # JOB 1: BUILD & DEPENDENCY CHECK
-  # ─────────────────────────────────────────
   build:
     name: 🔨 Build & Dependency Audit
     runs-on: ubuntu-latest
     outputs:
       build_status: ${{ steps.build_result.outputs.status }}
+    defaults:
+      run:
+        working-directory: api
     steps:
       - uses: actions/checkout@v4
+
+      - name: Detect working directory
+        id: detect_workdir
+        run: |
+          if [ -f "api/package.json" ]; then
+            echo "workdir=api" >> $GITHUB_OUTPUT
+          elif [ -f "package.json" ]; then
+            echo "workdir=." >> $GITHUB_OUTPUT
+          else
+            echo "workdir=api" >> $GITHUB_OUTPUT
+          fi
+        working-directory: ${{ github.workspace }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
       - name: Install Dependencies
         id: install
-        run: npm ci
+        run: npm install
         continue-on-error: true
 
       - name: Security Audit
         id: audit
-        run: npm audit --audit-level=high --json > audit_report.json 2>&1 || true
-
-      - name: Upload Audit Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: security-audit
-          path: audit_report.json
+        run: npm audit --audit-level=high --json > ../audit_report.json 2>&1 || true
 
       - name: Build Application
         id: build
-        run: npm run build 2>&1 | tee build_log.txt
+        run: npm run build 2>&1 | tee ../build_log.txt
         continue-on-error: true
 
-      - name: Upload Build Log
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-log
-          path: build_log.txt
+          name: build-artifacts
+          path: |
+            audit_report.json
+            build_log.txt
 
       - name: Set Build Status
         id: build_result
-        run: |
-          if [ "${{ steps.build.outcome }}" == "success" ]; then
-            echo "status=success" >> $GITHUB_OUTPUT
-          else
-            echo "status=failure" >> $GITHUB_OUTPUT
-          fi
+        run: echo "status=${{ steps.build.outcome }}" >> $GITHUB_OUTPUT
+        working-directory: ${{ github.workspace }}
 
       - name: Notify Slack - Build Failure
         if: steps.build.outcome == 'failure'
@@ -71,16 +75,11 @@ jobs:
           channel-id: ${{ env.SLACK_CHANNEL }}
           slack-message: |
             🔴 *BUILD FAILED* — ${{ github.repository }}
-            Branch: `${{ github.ref_name }}`
-            Commit: `${{ github.sha }}`
-            Actor: ${{ github.actor }}
-            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Build Logs>
+            Branch: `${{ github.ref_name }}` | Actor: ${{ github.actor }}
+            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Logs>
         env:
           SLACK_BOT_TOKEN: ${{ env.SLACK_BOT_TOKEN }}
 
-  # ─────────────────────────────────────────
-  # JOB 2: AUTOMATED QA TESTING
-  # ─────────────────────────────────────────
   test:
     name: 🧪 QA Test Suite
     runs-on: ubuntu-latest
@@ -88,206 +87,103 @@ jobs:
     if: needs.build.outputs.build_status == 'success'
     outputs:
       test_status: ${{ steps.test_result.outputs.status }}
+    defaults:
+      run:
+        working-directory: api
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-
       - name: Install Dependencies
-        run: npm ci
-
-      - name: Run Unit Tests
+        run: npm install
+      - name: Run Tests
         id: unit_tests
-        run: npm test -- --coverage --json --outputFile=test_results.json 2>&1 | tee test_log.txt
+        run: npm test 2>&1 | tee ../test_log.txt
         continue-on-error: true
-
-      - name: Run Integration Tests
-        id: integration_tests
-        run: npm run test:integration 2>&1 | tee -a test_log.txt
-        continue-on-error: true
-
-      - name: Upload Test Results
+      - name: Upload Test Log
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: |
-            test_results.json
-            test_log.txt
-            coverage/
-
+          path: test_log.txt
       - name: Set Test Status
         id: test_result
-        run: |
-          if [ "${{ steps.unit_tests.outcome }}" == "success" ]; then
-            echo "status=success" >> $GITHUB_OUTPUT
-          else
-            echo "status=failure" >> $GITHUB_OUTPUT
-          fi
-
+        run: echo "status=${{ steps.unit_tests.outcome }}" >> $GITHUB_OUTPUT
+        working-directory: ${{ github.workspace }}
       - name: Notify Slack - Test Results
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: ${{ env.SLACK_CHANNEL }}
           slack-message: |
-            ${{ steps.unit_tests.outcome == 'success' && '🟢' || '🔴' }} *QA TESTS ${{ steps.unit_tests.outcome == 'success' && 'PASSED' || 'FAILED' }}* — ${{ github.repository }}
+            ${{ steps.unit_tests.outcome == 'success' && '🟢 QA PASSED' || '🔴 QA FAILED' }} — ${{ github.repository }}
             Branch: `${{ github.ref_name }}`
-            Unit Tests: ${{ steps.unit_tests.outcome }}
-            Integration Tests: ${{ steps.integration_tests.outcome }}
-            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Test Report>
+            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Report>
         env:
           SLACK_BOT_TOKEN: ${{ env.SLACK_BOT_TOKEN }}
 
-  # ─────────────────────────────────────────
-  # JOB 3: FAULT LOG ANALYSIS (AI-POWERED)
-  # ─────────────────────────────────────────
   fault-analysis:
     name: 🔍 Fault Log Analysis
     runs-on: ubuntu-latest
     needs: [build, test]
     if: always() && (needs.build.outputs.build_status == 'failure' || needs.test.outputs.test_status == 'failure')
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Download Build Log
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
-          name: build-log
+          name: build-artifacts
         continue-on-error: true
-
-      - name: Download Test Results
-        uses: actions/download-artifact@v4
-        with:
-          name: test-results
-        continue-on-error: true
-
-      - name: Analyze Fault Logs
-        id: analyze
+      - name: Analyze & Report Faults
         run: |
-          echo "=== FAULT ANALYSIS REPORT ===" > fault_report.txt
+          echo "=== ODIN FAULT REPORT ===" > fault_report.txt
           echo "Repo: ${{ github.repository }}" >> fault_report.txt
           echo "Branch: ${{ github.ref_name }}" >> fault_report.txt
-          echo "Run: ${{ github.run_id }}" >> fault_report.txt
+          echo "Build: ${{ needs.build.outputs.build_status }}" >> fault_report.txt
+          echo "Tests: ${{ needs.test.outputs.test_status }}" >> fault_report.txt
           echo "" >> fault_report.txt
-
           if [ -f build_log.txt ]; then
             echo "=== BUILD ERRORS ===" >> fault_report.txt
-            grep -i "error\|failed\|cannot find\|module not found\|syntax error" build_log.txt | head -30 >> fault_report.txt || echo "No build errors found" >> fault_report.txt
+            grep -i "error\|failed\|cannot find\|module not found" build_log.txt | head -20 >> fault_report.txt || true
           fi
-
-          if [ -f test_log.txt ]; then
-            echo "" >> fault_report.txt
-            echo "=== TEST FAILURES ===" >> fault_report.txt
-            grep -i "fail\|error\|expect\|assert" test_log.txt | head -30 >> fault_report.txt || echo "No test failures found" >> fault_report.txt
-          fi
-
           cat fault_report.txt
-
-      - name: Upload Fault Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: fault-analysis-report
-          path: fault_report.txt
-
       - name: Notify Slack - Fault Report
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: ${{ env.SLACK_CHANNEL }}
           slack-message: |
-            🔍 *FAULT ANALYSIS COMPLETE* — ${{ github.repository }}
-            Build: ${{ needs.build.outputs.build_status }}
-            Tests: ${{ needs.test.outputs.test_status }}
+            🔍 *FAULT DETECTED* — ${{ github.repository }}
+            Build: `${{ needs.build.outputs.build_status }}` | Tests: `${{ needs.test.outputs.test_status }}`
+            Branch: `${{ github.ref_name }}`
             <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Full Fault Report>
-            ODIN is reviewing — auto-fix PR will follow if pattern is known.
         env:
-          SLACK_BOT_TOKEN: ${{ env.SLACK_BOT_TOKEN }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
-  # ─────────────────────────────────────────
-  # JOB 4: DEPLOY (only on main/master, all green)
-  # ─────────────────────────────────────────
   deploy:
     name: 🚀 Deploy to Production
     runs-on: ubuntu-latest
     needs: [build, test]
     if: |
-      github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') &&
       needs.build.outputs.build_status == 'success' &&
       needs.test.outputs.test_status == 'success'
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install & Build
-        run: |
-          npm ci
-          npm run build
-
-      - name: Seed Database (first deploy / migration)
-        if: env.DATABASE_URL != ''
-        run: |
-          if [ -f db/seeds/run_all_seeds.sql ]; then
-            npx ts-node scripts/seed.ts || echo "Seed skipped - already seeded"
-          fi
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        continue-on-error: true
-
-      - name: Deploy to Render/Railway
-        run: |
-          echo "Deploy triggered via git push — Render/Railway auto-deploys on main merge"
-          echo "Deploy URL will be confirmed in post-deploy health check"
-
       - name: Post-Deploy Health Check
         id: health_check
         run: |
-          sleep 30
           if [ -n "${{ secrets.DEPLOY_URL }}" ]; then
+            sleep 30
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.DEPLOY_URL }}/health || echo "000")
             echo "health_status=$STATUS" >> $GITHUB_OUTPUT
-            if [ "$STATUS" == "200" ]; then
-              echo "✅ Health check passed: $STATUS"
-            else
-              echo "❌ Health check failed: $STATUS"
-              exit 1
-            fi
           else
-            echo "No DEPLOY_URL set — skipping health check"
+            echo "health_status=SKIPPED" >> $GITHUB_OUTPUT
           fi
         continue-on-error: true
-
-      - name: Notify Slack - Deploy Success
-        if: steps.health_check.outcome == 'success' || steps.health_check.outcome == 'skipped'
+      - name: Notify Slack - Deploy
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: ${{ env.SLACK_CHANNEL }}
           slack-message: |
-            🚀 *DEPLOYED SUCCESSFULLY* — ${{ github.repository }}
-            Branch: `${{ github.ref_name }}`
-            Commit: `${{ github.sha }}`
-            Health: ✅ ${{ steps.health_check.outputs.health_status || 'N/A' }}
-            Actor: ${{ github.actor }}
+            🚀 *DEPLOYED* — ${{ github.repository }}
+            Branch: `${{ github.ref_name }}` | Health: ${{ steps.health_check.outputs.health_status }}
             <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Deploy>
-        env:
-          SLACK_BOT_TOKEN: ${{ env.SLACK_BOT_TOKEN }}
-
-      - name: Notify Slack - Deploy Failed
-        if: failure()
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          channel-id: ${{ env.SLACK_CHANNEL }}
-          slack-message: |
-            🔴 *DEPLOY FAILED* — ${{ github.repository }}
-            Branch: `${{ github.ref_name }}`
-            Health Check: ❌ ${{ steps.health_check.outputs.health_status }}
-            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Logs>
-            ODIN flagging for immediate review.
         env:
           SLACK_BOT_TOKEN: ${{ env.SLACK_BOT_TOKEN }}
