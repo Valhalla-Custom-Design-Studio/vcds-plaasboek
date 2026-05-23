@@ -1,27 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Switch, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, Switch, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { OfflineSyncService, FarmRecord } from '../../src/services/OfflineSyncService';
 
 const strings = {
-  en: { title: "Records", income: "Income", expense: "Expense", all: "All", add: "Add", date: "Date", amount: "Amount", category: "Category" },
-  af: { title: "Rekords", income: "Inkomste", expense: "Uitgawe", all: "Alles", add: "Voeg By", date: "Datum", amount: "Bedrag", category: "Kategorie" },
+  en: { title: "Records", income: "Income", expense: "Expense", all: "All", add: "Add", date: "Date", amount: "Amount", category: "Category", offline: "Offline — cached data", loading: "Loading..." },
+  af: { title: "Rekords", income: "Inkomste", expense: "Uitgawe", all: "Alles", add: "Voeg By", date: "Datum", amount: "Bedrag", category: "Kategorie", offline: "Vanlyn — kas-data", loading: "Laai..." },
 };
-
-const MOCK = [
-  { id:'1', type:'income', desc:'Beesverkoop', desc_en:'Cattle Sale', amount:12500, date:'2026-05-20' },
-  { id:'2', type:'expense', desc:'Voer', desc_en:'Feed', amount:3200, date:'2026-05-18' },
-  { id:'3', type:'income', desc:'Wolverkoop', desc_en:'Wool Sale', amount:8400, date:'2026-05-15' },
-];
 
 export default function Records() {
   const [lang, setLang] = useState<'en'|'af'>('af');
   const [filter, setFilter] = useState('all');
+  const [records, setRecords] = useState<FarmRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
   const t = strings[lang];
 
   useEffect(() => { AsyncStorage.getItem('lang').then(v => v && setLang(v as any)); }, []);
   const toggleLang = (v: boolean) => { const l = v ? 'af' : 'en'; setLang(l); AsyncStorage.setItem('lang', l); };
 
-  const filtered = filter === 'all' ? MOCK : MOCK.filter(r => r.type === filter);
+  const loadRecords = useCallback(async () => {
+    try {
+      const token = await AsyncStorage.getItem('token') ?? '';
+      const data = await OfflineSyncService.getRecords(token);
+      setRecords(data);
+      const stale = await OfflineSyncService.isCacheStale();
+      setIsOffline(stale && data.length > 0);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => { loadRecords(); }, [loadRecords]);
+
+  const onRefresh = () => { setRefreshing(true); loadRecords(); };
+
+  const filtered = filter === 'all' ? records : records.filter(r => r.type === filter);
+
+  if (loading) return <View style={s.center}><ActivityIndicator size="large" color="#92400e" /><Text style={s.loadingText}>{t.loading}</Text></View>;
 
   return (
     <View style={s.container}>
@@ -29,36 +49,60 @@ export default function Records() {
         <Text style={s.title}>{t.title}</Text>
         <View style={s.langRow}><Text style={s.langLabel}>EN</Text><Switch value={lang==='af'} onValueChange={toggleLang} trackColor={{true:'#92400e'}}/><Text style={s.langLabel}>AF</Text></View>
       </View>
-      <View style={s.filters}>
-        {['all','income','expense'].map(f=>(
-          <TouchableOpacity key={f} style={[s.chip, filter===f && s.chipActive]} onPress={()=>setFilter(f)}>
-            <Text style={[s.chipTxt, filter===f && s.chipTxtActive]}>{(t as any)[f]}</Text>
+      {isOffline && <View style={s.offlineBanner}><Text style={s.offlineText}>📴 {t.offline}</Text></View>}
+      <View style={s.filterRow}>
+        {['all', 'income', 'expense'].map(f => (
+          <TouchableOpacity key={f} style={[s.filterBtn, filter===f && s.filterActive]} onPress={() => setFilter(f)}>
+            <Text style={[s.filterText, filter===f && s.filterTextActive]}>{t[f as keyof typeof t] as string}</Text>
           </TouchableOpacity>
         ))}
       </View>
-      <FlatList data={filtered} keyExtractor={i=>i.id} renderItem={({item})=>(
-        <View style={s.card}>
-          <View style={s.cardRow}>
-            <Text style={s.desc}>{lang==='af' ? item.desc : item.desc_en}</Text>
-            <Text style={[s.amount, {color: item.type==='income' ? '#4ade80' : '#f87171'}]}>
-              {item.type==='income' ? '+' : '-'}R{item.amount.toLocaleString()}
-            </Text>
+      <FlatList
+        data={filtered}
+        keyExtractor={i => i.id}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#92400e" />}
+        renderItem={({item}) => (
+          <View style={[s.card, item.type==='income' ? s.incomeCard : s.expenseCard]}>
+            <View style={s.cardRow}>
+              <Text style={s.cardDesc}>{lang==='af' ? item.desc : item.desc_en}</Text>
+              <Text style={[s.cardAmount, item.type==='income' ? s.incomeText : s.expenseText]}>
+                {item.type==='income' ? '+' : '-'}R{item.amount.toLocaleString('en-ZA')}
+              </Text>
+            </View>
+            <Text style={s.cardDate}>{item.date}</Text>
+            {!item.synced && <Text style={s.pendingBadge}>⏳ Pending sync</Text>}
           </View>
-          <Text style={s.date}>{item.date}</Text>
-        </View>
-      )} />
+        )}
+        ListEmptyComponent={<Text style={s.empty}>No records found.</Text>}
+      />
     </View>
   );
 }
 
 const s = StyleSheet.create({
-  container:{flex:1,backgroundColor:'#1c1007'}, header:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',padding:20,paddingTop:50},
-  title:{fontSize:24,fontWeight:'bold',color:'#fef3c7'}, langRow:{flexDirection:'row',alignItems:'center',gap:6}, langLabel:{color:'#92400e',fontSize:12},
-  filters:{flexDirection:'row',paddingHorizontal:16,gap:8,marginBottom:12},
-  chip:{paddingHorizontal:14,paddingVertical:6,borderRadius:20,backgroundColor:'#292524'},
-  chipActive:{backgroundColor:'#92400e'}, chipTxt:{color:'#d97706',fontSize:13}, chipTxtActive:{color:'#fff'},
-  card:{backgroundColor:'#292524',margin:8,marginHorizontal:16,padding:16,borderRadius:10},
+  container:{flex:1,backgroundColor:'#fef9f0'},
+  center:{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'#fef9f0'},
+  header:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',padding:16,backgroundColor:'#92400e'},
+  title:{fontSize:20,fontWeight:'700',color:'#fff'},
+  langRow:{flexDirection:'row',alignItems:'center',gap:4},
+  langLabel:{color:'#fff',fontSize:12},
+  loadingText:{marginTop:8,color:'#92400e'},
+  offlineBanner:{backgroundColor:'#fef3c7',padding:8,marginHorizontal:12,marginTop:8,borderRadius:6,borderWidth:1,borderColor:'#f59e0b'},
+  offlineText:{color:'#92400e',fontSize:12,textAlign:'center'},
+  filterRow:{flexDirection:'row',gap:8,padding:12},
+  filterBtn:{paddingHorizontal:14,paddingVertical:6,borderRadius:20,backgroundColor:'#e5e7eb'},
+  filterActive:{backgroundColor:'#92400e'},
+  filterText:{color:'#374151',fontSize:13},
+  filterTextActive:{color:'#fff'},
+  card:{margin:8,marginHorizontal:12,padding:12,borderRadius:8,backgroundColor:'#fff',borderLeftWidth:4},
+  incomeCard:{borderLeftColor:'#10b981'},
+  expenseCard:{borderLeftColor:'#ef4444'},
   cardRow:{flexDirection:'row',justifyContent:'space-between',alignItems:'center'},
-  desc:{color:'#fef3c7',fontSize:15,fontWeight:'600'}, amount:{fontSize:16,fontWeight:'bold'},
-  date:{color:'#92400e',fontSize:12,marginTop:4},
+  cardDesc:{fontSize:14,fontWeight:'600',color:'#1f2937',flex:1},
+  cardAmount:{fontSize:15,fontWeight:'700'},
+  incomeText:{color:'#10b981'},
+  expenseText:{color:'#ef4444'},
+  cardDate:{fontSize:12,color:'#6b7280',marginTop:4},
+  pendingBadge:{fontSize:10,color:'#f59e0b',marginTop:2},
+  empty:{textAlign:'center',color:'#9ca3af',marginTop:40},
 });
