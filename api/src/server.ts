@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 dotenv.config();
 import * as Sentry from '@sentry/node';
+import { uploadRouter } from './routes/upload';
 
 // ─── Sentry v8 Error Monitoring ────────────────────────────
 Sentry.init({
@@ -55,6 +56,8 @@ app.get('/', (_req, res) => {
 });
 
 const server =
+app.use('/api/upload', uploadRouter);
+
 app.listen(PORT, () => {
   console.log(`[VCDS-VEEKOS] API running on port ${PORT}`);
 });
