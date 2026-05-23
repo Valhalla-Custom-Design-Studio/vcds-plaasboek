@@ -44,3 +44,18 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/vcds_test
           JWT_SECRET: test-secret
           NODE_ENV: test
+
+      - name: Notify Slack on Deploy
+        if: always()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          slack-message: |
+            ${{ job.status == 'success' && '✅ DEPLOYED' || '❌ DEPLOY FAILED' }} *Plaasboek™*
+            Repo: `${{ github.repository }}`
+            Branch: `${{ github.ref_name }}`
+            Commit: `${{ github.sha }}`
+            Actor: ${{ github.actor }}
+            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Run>
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
