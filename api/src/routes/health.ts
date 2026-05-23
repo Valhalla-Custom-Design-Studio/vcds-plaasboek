@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { pool } from '../db/pool';
 
-export const healthRouter = Router();
+const healthRouter = Router();
 
 healthRouter.get('/', async (_req: Request, res: Response) => {
   try {
@@ -11,3 +11,5 @@ healthRouter.get('/', async (_req: Request, res: Response) => {
     res.status(503).json({ success: false, status: 'unhealthy', db: 'disconnected' });
   }
 });
+
+export default healthRouter;

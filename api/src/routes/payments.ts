@@ -3,7 +3,7 @@ import { validateITN, buildPaymentUrl } from '../services/PayFastService';
 import { pool } from '../db/pool';
 import { authenticate, AuthRequest } from '../middleware/auth';
 
-export const paymentsRouter = Router();
+const paymentsRouter = Router();
 
 // PayFast ITN webhook (no auth — PayFast calls this)
 paymentsRouter.post('/itn', async (req: Request, res: Response) => {
@@ -45,3 +45,5 @@ paymentsRouter.post('/initiate', authenticate, async (req: AuthRequest, res: Res
     res.json({ success: true, paymentUrl });
   } catch { res.status(500).json({ success: false, message: 'Failed to initiate payment' }); }
 });
+
+export default paymentsRouter;

@@ -4,10 +4,9 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 dotenv.config();
-
 import * as Sentry from '@sentry/node';
 
-// ─── Sentry Error Monitoring ───────────────────────────────
+// ─── Sentry v8 Error Monitoring ────────────────────────────
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV || 'production',
@@ -18,7 +17,10 @@ Sentry.init({
     Sentry.expressIntegration(),
   ],
 });
-// ──────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────
+
+
+
 
 
 
@@ -31,11 +33,6 @@ process.on('uncaughtException', (err) => {
 });
 
 const app = express();
-
-  // Sentry request handler (must be first middleware)
-  app.use(Sentry.requestHandler());
-  app.use(Sentry.tracingHandler());
-
 const PORT = process.env.PORT || 3000;
 const API_VERSION = process.env.API_VERSION || 'v1';
 
@@ -57,10 +54,7 @@ app.get('/', (_req, res) => {
   res.json({ service: 'Plaasboek API', version: API_VERSION, status: 'online' });
 });
 
-const server = 
-  // Sentry error handler (must be before any other error handler)
-  app.use(Sentry.errorHandler());
-
+const server =
 app.listen(PORT, () => {
   console.log(`[VCDS-VEEKOS] API running on port ${PORT}`);
 });

@@ -2,7 +2,7 @@ import { Router, Response } from 'express';
 import { pool } from '../db/pool';
 import { authenticate, AuthRequest } from '../middleware/auth';
 
-export const subscriptionRouter = Router();
+const subscriptionRouter = Router();
 subscriptionRouter.use(authenticate);
 
 subscriptionRouter.get('/current', async (req: AuthRequest, res: Response) => {
@@ -21,3 +21,5 @@ subscriptionRouter.get('/plans', async (_req: AuthRequest, res: Response) => {
     res.json({ success: true, plans: result.rows });
   } catch { res.status(500).json({ success: false, message: 'Failed to fetch plans' }); }
 });
+
+export default subscriptionRouter;
