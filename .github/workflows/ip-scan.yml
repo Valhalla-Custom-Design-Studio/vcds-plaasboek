@@ -1,0 +1,109 @@
+name: IP & Security Scan
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'  # Every Monday 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  ip-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install gitleaks (secret scanner)
+        run: |
+          wget -q https://github.com/gitleaks/gitleaks/releases/download/v8.18.4/gitleaks_8.18.4_linux_x64.tar.gz
+          tar -xzf gitleaks_8.18.4_linux_x64.tar.gz
+          chmod +x gitleaks
+          sudo mv gitleaks /usr/local/bin/
+
+      - name: Run gitleaks secret scan
+        id: secrets
+        run: |
+          gitleaks detect --source . --no-git --report-format json --report-path gitleaks-report.json || true
+          COUNT=$(cat gitleaks-report.json 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(len(d))" 2>/dev/null || echo "0")
+          echo "leak_count=$COUNT" >> $GITHUB_OUTPUT
+          echo "Secrets found: $COUNT"
+
+      - name: IP Keyword Scan
+        id: ip_scan
+        run: |
+          KEYWORDS=("VleisGPT" "Die Kluis" "VONK" "LEWE" "PROOF" "Dorpie" "vcds-dorpie")
+          FOUND=""
+          for kw in "${KEYWORDS[@]}"; do
+            MATCHES=$(grep -rn --include="*.ts" --include="*.tsx" --include="*.js" --include="*.json" --include="*.md" "$kw" . --exclude-dir=node_modules --exclude-dir=.git 2>/dev/null | grep -v ".env.example" | head -5)
+            if [ -n "$MATCHES" ]; then
+              FOUND="$FOUND\n⚠️ KEYWORD: $kw\n$MATCHES"
+            fi
+          done
+          if [ -n "$FOUND" ]; then
+            echo "ip_issues=true" >> $GITHUB_OUTPUT
+            echo -e "$FOUND" > ip-scan-report.txt
+            cat ip-scan-report.txt
+          else
+            echo "ip_issues=false" >> $GITHUB_OUTPUT
+            echo "✅ No IP keyword violations found"
+          fi
+
+      - name: Check for exposed .env files
+        id: env_check
+        run: |
+          EXPOSED=$(find . -name ".env" -not -name ".env.example" -not -path "./.git/*" 2>/dev/null)
+          if [ -n "$EXPOSED" ]; then
+            echo "env_exposed=true" >> $GITHUB_OUTPUT
+            echo "❌ EXPOSED ENV FILES: $EXPOSED"
+          else
+            echo "env_exposed=false" >> $GITHUB_OUTPUT
+            echo "✅ No exposed .env files"
+          fi
+
+      - name: Upload scan reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ip-security-scan-report
+          path: |
+            gitleaks-report.json
+            ip-scan-report.txt
+          retention-days: 30
+
+      - name: Notify Slack — CLEAN
+        if: steps.secrets.outputs.leak_count == '0' && steps.ip_scan.outputs.ip_issues == 'false' && steps.env_check.outputs.env_exposed == 'false'
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: 'vcds-ops'
+          slack-message: |
+            ✅ IP & Security Scan PASSED: ${{ github.repository }}
+            Branch: ${{ github.ref_name }} | Commit: ${{ github.sha }}
+            No secrets, no IP violations, no exposed .env files.
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Notify Slack — VIOLATIONS FOUND
+        if: steps.secrets.outputs.leak_count != '0' || steps.ip_scan.outputs.ip_issues == 'true' || steps.env_check.outputs.env_exposed == 'true'
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: 'vcds-ops'
+          slack-message: |
+            🔴 IP/SECURITY VIOLATION: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Secrets leaked: ${{ steps.secrets.outputs.leak_count }}
+            IP keyword violations: ${{ steps.ip_scan.outputs.ip_issues }}
+            Exposed .env: ${{ steps.env_check.outputs.env_exposed }}
+            ⚠️ DO NOT MERGE — Review immediately
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Fail on violations
+        if: steps.secrets.outputs.leak_count != '0' || steps.env_check.outputs.env_exposed == 'true'
+        run: |
+          echo "❌ CRITICAL: Secrets or exposed .env detected. Blocking merge."
+          exit 1
