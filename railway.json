@@ -1,9 +1,10 @@
 {
   "build": {
-    "builder": "NIXPACKS"
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "api/Dockerfile"
   },
   "deploy": {
-    "startCommand": "cd api && npm ci --only=production && node dist/server.js",
+    "startCommand": "node dist/server.js",
     "healthcheckPath": "/api/v1/health",
     "healthcheckTimeout": 60,
     "restartPolicyType": "ON_FAILURE",
