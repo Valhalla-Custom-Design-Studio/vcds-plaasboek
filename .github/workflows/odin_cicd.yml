@@ -71,6 +71,7 @@ jobs:
       - name: Notify Slack - Build Failure
         if: steps.build.outcome == 'failure'
         uses: slackapi/slack-github-action@v1.26.0
+        continue-on-error: true
         with:
           channel-id: ${{ env.SLACK_CHANNEL }}
           slack-message: |
@@ -112,6 +113,7 @@ jobs:
         working-directory: ${{ github.workspace }}
       - name: Notify Slack - Test Results
         uses: slackapi/slack-github-action@v1.26.0
+        continue-on-error: true
         with:
           channel-id: ${{ env.SLACK_CHANNEL }}
           slack-message: |
@@ -146,6 +148,7 @@ jobs:
           cat fault_report.txt
       - name: Notify Slack - Fault Report
         uses: slackapi/slack-github-action@v1.26.0
+        continue-on-error: true
         with:
           channel-id: ${{ env.SLACK_CHANNEL }}
           slack-message: |
@@ -179,6 +182,7 @@ jobs:
         continue-on-error: true
       - name: Notify Slack - Deploy
         uses: slackapi/slack-github-action@v1.26.0
+        continue-on-error: true
         with:
           channel-id: ${{ env.SLACK_CHANNEL }}
           slack-message: |
