@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Joi from 'joi';
 import { pool } from '../db/pool';
 
-export const authRouter = Router();
+const authRouter = Router();
 
 const registerSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -47,3 +47,5 @@ authRouter.post('/login', async (req: Request, res: Response) => {
     res.json({ success: true, token, user: { id: user.id, email: user.email, tier: user.tier } });
   } catch (err) { res.status(500).json({ success: false, message: 'Login failed' }); }
 });
+
+export default authRouter;
