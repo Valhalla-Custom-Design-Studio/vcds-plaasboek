@@ -1,14 +1,23 @@
 import { I18n } from 'i18n-js';
-import * as Localization from 'expo-localization';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import en from './en.json';
 import af from './af.json';
 
-const i18n = new I18n({ en, af });
-i18n.locale = Localization.getLocales()[0]?.languageCode ?? 'en';
+export const i18n = new I18n({ en, af });
+i18n.defaultLocale = 'af';
+i18n.locale = 'af';
 i18n.enableFallback = true;
-i18n.defaultLocale = 'en';
 
-export default i18n;
-export type SupportedLocale = 'en' | 'af';
-export const setLocale = (locale: SupportedLocale) => { i18n.locale = locale; };
-export const t = (key: string, options?: object) => i18n.t(key, options);
+export async function loadLocale() {
+  try {
+    const saved = await AsyncStorage.getItem('language');
+    if (saved) i18n.locale = saved;
+  } catch {}
+}
+
+export async function setLocale(lang: 'af' | 'en') {
+  i18n.locale = lang;
+  await AsyncStorage.setItem('language', lang);
+}
+
+export const t = (key: string, opts?: object) => i18n.t(key, opts);

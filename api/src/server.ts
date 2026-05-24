@@ -6,61 +6,67 @@ import dotenv from 'dotenv';
 dotenv.config();
 import * as Sentry from '@sentry/node';
 
-// ─── Sentry v8 Error Monitoring ────────────────────────────
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV || 'production',
-  release: 'plaasboek@' + (process.env.npm_package_version || '1.0.0'),
-  tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.2 : 1.0,
-  integrations: [
-    Sentry.httpIntegration(),
-    Sentry.expressIntegration(),
-  ],
+  tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
 });
-// ───────────────────────────────────────────────────────────
 
-
-
-
-
-
-// ─── Prevent crash on unhandled rejections ───
-process.on('unhandledRejection', (reason) => {
-  console.error('[VCDS-VEEKOS] Unhandled Rejection:', reason);
-});
-process.on('uncaughtException', (err) => {
-  console.error('[VCDS-VEEKOS] Uncaught Exception:', err.message);
-});
+import authRouter from './routes/auth';
+import journalRouter from './routes/journal';
+import rainfallRouter from './routes/rainfall';
+import livestockRouter from './routes/livestock';
+import expensesRouter from './routes/expenses';
+import workersRouter from './routes/workers';
+import vetVisitsRouter from './routes/vetVisits';
+import emergencyContactsRouter from './routes/emergencyContacts';
+import sosRouter from './routes/sos';
+import adminRouter from './routes/admin';
+import pushTokensRouter from './routes/pushTokens';
+import uploadRouter from './routes/upload';
+import syncRouter from './routes/sync';
+import paymentsRouter from './routes/payments';
+import { errorHandler } from './middleware/errorHandler';
+import { requestLogger } from './middleware/requestLogger';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-const API_VERSION = process.env.API_VERSION || 'v1';
 
+app.use(Sentry.Handlers.requestHandler());
 app.use(helmet());
-app.use(cors({ origin: (process.env.ALLOWED_ORIGINS || '*').split(','), credentials: true }));
-app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
+app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
 app.use(express.json({ limit: '10mb' }));
+app.use(requestLogger);
 
-app.get(`/api/${API_VERSION}/health`, (_req, res) => {
-  res.json({ 
-    success: true, 
-    status: 'healthy', 
-    service: 'vcds-plaasboek',
-    timestamp: new Date().toISOString() 
-  });
-});
+const limiter = rateLimit({ windowMs: 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false });
+app.use('/api/', limiter);
 
-app.get('/', (_req, res) => {
-  res.json({ service: 'Plaasboek API', version: API_VERSION, status: 'online' });
-});
+// Health check
+app.get('/health', (_, res) => res.json({ status: 'ok', service: 'plaasboek-api', timestamp: new Date().toISOString() }));
 
-const server =
-app.listen(PORT, () => {
-  console.log(`[VCDS-VEEKOS] API running on port ${PORT}`);
-});
+// Routes
+app.post('/api/signup', authRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/users', authRouter);
+app.use('/api/journal', journalRouter);
+app.use('/api/rainfall', rainfallRouter);
+app.use('/api/camps', livestockRouter);
+app.use('/api/expenses', expensesRouter);
+app.use('/api/workers', workersRouter);
+app.use('/api/vet-visits', vetVisitsRouter);
+app.use('/api/emergency-contacts', emergencyContactsRouter);
+app.use('/api/sos', sosRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/push-tokens', pushTokensRouter);
+app.use('/api/upload', uploadRouter);
+app.use('/api/sync', syncRouter);
+app.use('/api/payments', paymentsRouter);
 
-server.on('error', (err) => {
-  console.error('[VCDS-VEEKOS] Server error:', err);
+app.use(Sentry.Handlers.errorHandler());
+app.use(errorHandler);
+
+const PORT = parseInt(process.env.PORT || '3000');
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`[Plaasboek API] Running on port ${PORT} — ${process.env.NODE_ENV || 'development'}`);
 });
 
 export default app;

@@ -1,43 +1,127 @@
 {
-  "common": {
-    "loading": "Laai tans...",
-    "error": "Iets het verkeerd gegaan. Probeer asseblief weer.",
-    "retry": "Probeer weer",
-    "cancel": "Kanselleer",
-    "confirm": "Bevestig",
-    "save": "Stoor",
-    "close": "Sluit",
-    "back": "Terug",
-    "next": "Volgende",
-    "submit": "Dien in",
-    "currency": "ZAR",
-    "dateFormat": "DD/MM/JJJJ",
-    "units": "metriek"
+  "nav": {
+    "journal": "Joernaal", "rainfall": "Reënval", "livestock": "Lewende Hawe",
+    "expenses": "Uitgawes", "workers": "Werkers", "emergencies": "Noodgevalle",
+    "profile": "Profiel", "admin": "Admin"
   },
   "auth": {
-    "login": "Teken In",
-    "logout": "Teken Uit",
-    "register": "Registreer",
-    "email": "E-posadres",
-    "password": "Wagwoord",
+    "signIn": "Meld Aan", "signUp": "Registreer", "signOut": "Meld Af",
+    "email": "E-pos", "password": "Wagwoord", "confirmPassword": "Bevestig Wagwoord",
+    "name": "Naam", "farmName": "Plaasnaam",
+    "alreadyRegistered": "Reeds geregistreer? Meld aan",
+    "noAccount": "Geen rekening? Registreer",
     "forgotPassword": "Wagwoord vergeet?",
-    "resetPassword": "Stel Wagwoord Terug"
+    "contactAdmin": "Kontak jou admin",
+    "pendingBanner": "Wag vir Goedkeuring — Jy kan tans net kyk",
+    "pendingInfo": "Jou rekening wag vir goedkeuring. Jy kan tans net kyk. SOS werk steeds.",
+    "adminApprovalNote": "Jou rekening benodig admin-goedkeuring voor volle toegang"
   },
-  "payment": {
-    "subscribe": "Teken Nou In",
-    "changePlan": "Verander Plan",
-    "cancelSubscription": "Kanselleer Intekening",
-    "payWith": "Betaal met PayFast",
-    "eft": "EFT / Bankoordrag",
-    "invoiceReady": "Jou SARS-voldoenende faktuur is gereed",
-    "paymentSuccess": "Betaling suksesvol!",
-    "paymentFailed": "Betaling het misluk. Probeer asseblief weer.",
-    "freeTrial": "Begin 7-Dag Gratis Proeftydperk"
+  "common": {
+    "save": "Stoor", "cancel": "Kanselleer", "delete": "Verwyder", "add": "Voeg By",
+    "edit": "Wysig", "filter": "Filter", "search": "Soek", "apply": "Toepas",
+    "clear": "Maak Skoon", "close": "Sluit", "confirm": "Bevestig", "retry": "Probeer Weer",
+    "loading": "Laai...", "saved": "Gestoor", "deleted": "Verwyder",
+    "error": "Fout", "success": "Sukses",
+    "failedToSave": "Kon nie stoor nie", "failedToLoad": "Kon nie laai nie",
+    "failedToDelete": "Kon nie verwyder nie", "anErrorOccurred": "'n Fout het voorgekom",
+    "noData": "Geen data nie", "date": "Datum", "time": "Tyd"
   },
-  "accessibility": {
-    "skipToMain": "Spring na hoofinhoud",
-    "langToggle": "Skakel na Engels",
-    "closeModal": "Sluit venster",
-    "loading": "Inhoud laai tans, wag asseblief"
+  "offline": {
+    "banner": "Vanlyn — Data word gestoor",
+    "syncing": "Sinkroniseer...",
+    "savedOffline": "Vanlyn gestoor — sal sinkroniseer wanneer aanlyn"
+  },
+  "weather": {
+    "sunny": "Sonnig", "cloudy": "Bewolk", "rainy": "Reënerig",
+    "stormy": "Stormrig", "windy": "Winderig", "cold": "Koud"
+  },
+  "journal": {
+    "title": "Joernaal", "noEntries": "Geen inskrywings nie", "addEntry": "Voeg Inskrywing By",
+    "editEntry": "Wysig Inskrywing", "weather": "Weer", "rainfall": "Reënval (mm)",
+    "activities": "Aktiwiteite", "notes": "Notas", "photos": "Foto\'s",
+    "addPhoto": "Voeg Foto By", "camera": "Kamera", "gallery": "Galery",
+    "deleteConfirm": "Is jy seker jy wil dit verwyder?"
+  },
+  "rainfall": {
+    "title": "Reënval", "noData": "Geen reënval data nie", "addRainfall": "Voeg Reënval By",
+    "amount": "Hoeveelheid (mm)", "total": "Totaal", "average": "Gemiddeld",
+    "longestDry": "Langste Droë", "days": "dae"
+  },
+  "livestock": {
+    "title": "Lewende Hawe", "camps": "Kampe", "noCamps": "Geen kampe nie",
+    "addCamp": "Voeg Kamp By", "campName": "Kamp Naam", "head": "Koppe",
+    "addition": "Byvoeg", "removal": "Verwyder",
+    "birth": "Geboorte", "purchase": "Aankoop", "sale": "Verkoop", "death": "Dood", "theft": "Diefstal",
+    "quantity": "Hoeveelheid", "reason": "Rede",
+    "vetVisits": "Veearts Besoeke", "animalId": "Dier ID/Merk", "treatment": "Behandeling",
+    "medication": "Medikasie", "dosage": "Dosis",
+    "withdrawalDays": "Onttrekkingsperiode (dae)", "safeDate": "Veilige Datum",
+    "visitDate": "Besoek Datum", "withdrawalExpiring": "Onttrekking verstryk binnekort"
+  },
+  "expenses": {
+    "title": "Uitgawes", "noExpenses": "Geen uitgawes nie", "addExpense": "Voeg Uitgawe By",
+    "amount": "Bedrag", "category": "Kategorie", "description": "Beskrywing",
+    "monthlyTotal": "Maandelikse Totaal", "yearTotal": "Jaar Totaal", "exportCsv": "Voer uit (CSV)",
+    "fuel": "Brandstof", "feed": "Voer", "vet": "Veearts", "fencing": "Omheining",
+    "labour": "Arbeid", "equipment": "Toerusting", "other": "Ander"
+  },
+  "workers": {
+    "title": "Werkers", "noWorkers": "Geen werkers nie", "addWorker": "Voeg Werker By",
+    "idNumber": "ID Nommer", "position": "Posisie", "dailyLog": "Daaglikse Log",
+    "present": "Teenwoordig", "absent": "Afwesig", "hoursWorked": "Ure Gewerk",
+    "tasks": "Take", "daysPresent": "Dae Teenwoordig", "totalHours": "Totale Ure"
+  },
+  "sos": {
+    "title": "Noodgevalle", "history": "SOS Geskiedenis", "noEvents": "Geen SOS gebeure nie",
+    "sent": "Gestuur", "received": "Ontvang", "resolved": "Opgelos",
+    "unresolved": "Onopgelos", "cancelled": "Gekanselleer",
+    "acknowledge": "Erken", "navigate": "Navigeer", "callSAPS": "Bel SAPS",
+    "sending": "SOS word gestuur...", "sent_": "SOS Gestuur!",
+    "chooseType": "Kies SOS Tipe",
+    "attack": "Aanval", "medical": "Medies", "fire": "Brand", "general": "Ander",
+    "standDown": "Staan Af — Alles Veilig",
+    "standDownConfirm": "Bevestig dat alles veilig is en kanselleer die alarm?",
+    "alertCancelled": "Alarm gekanselleer — almal ingelig",
+    "dms": "Dooiemansskakelaar",
+    "dmsDesc": "As jou foon nie aanmeld binne die tyd, stuur die bediener outomaties SOS namens jou.",
+    "armed": "Gewapen", "disarmed": "Ontwapen",
+    "30min": "30 min", "1hr": "1 uur", "2hr": "2 ure", "4hr": "4 ure", "8hr": "8 ure"
+  },
+  "contacts": {
+    "title": "Noodkontakte", "addContact": "Voeg Kontak By", "editContact": "Wysig Kontak",
+    "contactName": "Kontak Naam", "phone": "Telefoonnommer",
+    "max20": "Maksimum 20 kontakte bereik",
+    "testSms": "Stuur Toets SMS", "testSmsSent": "Toets SMS gestuur", "testSmsFailed": "Toets SMS het gefaal",
+    "saps": "SAPS", "ambulance": "Ambulans", "fire": "Brandweer", "neighbourhood": "Buurtwag",
+    "security": "Sekuriteit", "farmwatch": "Plaaswag", "family": "Familie"
+  },
+  "medical": {
+    "title": "Mediese Profiel", "bloodType": "Bloedgroep", "allergies": "Allergieë",
+    "chronicConditions": "Chroniese Toestande", "medications": "Medikasie",
+    "medicalAidName": "Mediese Fonds Naam", "medicalAidNumber": "Mediese Fonds Nommer",
+    "nearestHospital": "Naaste Hospitaal", "doctorName": "Dokter Naam", "doctorPhone": "Dokter Nommer",
+    "info": "Hierdie inligting word ingesluit in mediese nood-SMS boodskappe."
+  },
+  "farm": {
+    "title": "Plaasprofiel", "plotNumber": "Plaas-/Erfreg Nommer", "gateGps": "Hek GPS",
+    "gateGpsDesc": "GPS van jou plaashek — word in SOS SMS ingesluit",
+    "nearestTown": "Naaste Dorp", "alertRadius": "Waarskuwingsradius", "setGateGps": "Stel Hek GPS"
+  },
+  "admin": {
+    "title": "Admin", "manageUsers": "Bestuur Gebruikers", "pendingUsers": "Hangende Gebruikers",
+    "approve": "Keur Goed", "reject": "Verwerp", "stats": "Admin Statistieke",
+    "totalUsers": "Totale Gebruikers", "activeSOS": "Aktiewe SOS"
+  },
+  "sosSettings": {
+    "title": "SOS Instellings", "offlineQueue": "Vanlyn Waglys",
+    "noMessages": "Geen wagtende boodskappe", "sendNow": "Stuur Nou",
+    "satelliteSms": "Satelliet SMS",
+    "satelliteDesc": "iPhone 14+ en Pixel 9+ kan nood-SMS via satelliet stuur as geen sein beskikbaar is nie."
+  },
+  "validation": {
+    "allRequired": "Alle velde is verpligtend",
+    "passwordMismatch": "Wagwoorde stem nie ooreen nie",
+    "passwordLength": "Wagwoord moet minstens 8 karakters wees",
+    "idNumber": "SA ID-nommer moet 13 syfers wees"
   }
 }

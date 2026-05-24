@@ -1,43 +1,127 @@
 {
-  "common": {
-    "loading": "Loading...",
-    "error": "Something went wrong. Please try again.",
-    "retry": "Retry",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "save": "Save",
-    "close": "Close",
-    "back": "Back",
-    "next": "Next",
-    "submit": "Submit",
-    "currency": "ZAR",
-    "dateFormat": "DD/MM/YYYY",
-    "units": "metric"
+  "nav": {
+    "journal": "Journal", "rainfall": "Rainfall", "livestock": "Livestock",
+    "expenses": "Expenses", "workers": "Workers", "emergencies": "Emergencies",
+    "profile": "Profile", "admin": "Admin"
   },
   "auth": {
-    "login": "Log In",
-    "logout": "Log Out",
-    "register": "Register",
-    "email": "Email Address",
-    "password": "Password",
-    "forgotPassword": "Forgot Password?",
-    "resetPassword": "Reset Password"
+    "signIn": "Sign In", "signUp": "Sign Up", "signOut": "Sign Out",
+    "email": "Email", "password": "Password", "confirmPassword": "Confirm Password",
+    "name": "Name", "farmName": "Farm Name",
+    "alreadyRegistered": "Already registered? Sign in",
+    "noAccount": "No account? Sign up",
+    "forgotPassword": "Forgot password?",
+    "contactAdmin": "Contact your admin",
+    "pendingBanner": "Pending Approval — You currently have view-only access",
+    "pendingInfo": "Your account is pending approval. View-only access for now. SOS still works.",
+    "adminApprovalNote": "Your account will need admin approval before full access"
   },
-  "payment": {
-    "subscribe": "Subscribe Now",
-    "changePlan": "Change Plan",
-    "cancelSubscription": "Cancel Subscription",
-    "payWith": "Pay with PayFast",
-    "eft": "EFT / Bank Transfer",
-    "invoiceReady": "Your SARS-compliant invoice is ready",
-    "paymentSuccess": "Payment successful!",
-    "paymentFailed": "Payment failed. Please try again.",
-    "freeTrial": "Start 7-Day Free Trial"
+  "common": {
+    "save": "Save", "cancel": "Cancel", "delete": "Delete", "add": "Add",
+    "edit": "Edit", "filter": "Filter", "search": "Search", "apply": "Apply",
+    "clear": "Clear", "close": "Close", "confirm": "Confirm", "retry": "Retry",
+    "loading": "Loading...", "saved": "Saved", "deleted": "Deleted",
+    "error": "Error", "success": "Success",
+    "failedToSave": "Failed to save", "failedToLoad": "Failed to load",
+    "failedToDelete": "Failed to delete", "anErrorOccurred": "An error occurred",
+    "noData": "No data", "date": "Date", "time": "Time"
   },
-  "accessibility": {
-    "skipToMain": "Skip to main content",
-    "langToggle": "Switch to Afrikaans",
-    "closeModal": "Close modal",
-    "loading": "Content is loading, please wait"
+  "offline": {
+    "banner": "Offline — Data will be saved",
+    "syncing": "Syncing...",
+    "savedOffline": "Saved offline — will sync when online"
+  },
+  "weather": {
+    "sunny": "Sunny", "cloudy": "Cloudy", "rainy": "Rainy",
+    "stormy": "Stormy", "windy": "Windy", "cold": "Cold"
+  },
+  "journal": {
+    "title": "Journal", "noEntries": "No entries yet", "addEntry": "Add Entry",
+    "editEntry": "Edit Entry", "weather": "Weather", "rainfall": "Rainfall (mm)",
+    "activities": "Activities", "notes": "Notes", "photos": "Photos",
+    "addPhoto": "Add Photo", "camera": "Camera", "gallery": "Gallery",
+    "deleteConfirm": "Are you sure you want to delete this?"
+  },
+  "rainfall": {
+    "title": "Rainfall", "noData": "No rainfall data yet", "addRainfall": "Add Rainfall",
+    "amount": "Amount (mm)", "total": "Total", "average": "Average",
+    "longestDry": "Longest Dry", "days": "days"
+  },
+  "livestock": {
+    "title": "Livestock", "camps": "Camps", "noCamps": "No camps yet",
+    "addCamp": "Add Camp", "campName": "Camp Name", "head": "Head",
+    "addition": "Addition", "removal": "Removal",
+    "birth": "Birth", "purchase": "Purchase", "sale": "Sale", "death": "Death", "theft": "Theft",
+    "quantity": "Quantity", "reason": "Reason",
+    "vetVisits": "Vet Visits", "animalId": "Animal ID/Tag", "treatment": "Treatment",
+    "medication": "Medication", "dosage": "Dosage",
+    "withdrawalDays": "Withdrawal Period (days)", "safeDate": "Safe Date",
+    "visitDate": "Visit Date", "withdrawalExpiring": "Withdrawal expiring soon"
+  },
+  "expenses": {
+    "title": "Expenses", "noExpenses": "No expenses yet", "addExpense": "Add Expense",
+    "amount": "Amount", "category": "Category", "description": "Description",
+    "monthlyTotal": "Monthly Total", "yearTotal": "Year Total", "exportCsv": "Export CSV",
+    "fuel": "Fuel", "feed": "Feed", "vet": "Vet", "fencing": "Fencing",
+    "labour": "Labour", "equipment": "Equipment", "other": "Other"
+  },
+  "workers": {
+    "title": "Workers", "noWorkers": "No workers yet", "addWorker": "Add Worker",
+    "idNumber": "ID Number", "position": "Position", "dailyLog": "Daily Log",
+    "present": "Present", "absent": "Absent", "hoursWorked": "Hours Worked",
+    "tasks": "Tasks", "daysPresent": "Days Present", "totalHours": "Total Hours"
+  },
+  "sos": {
+    "title": "Emergencies", "history": "SOS History", "noEvents": "No SOS events yet",
+    "sent": "Sent", "received": "Received", "resolved": "Resolved",
+    "unresolved": "Unresolved", "cancelled": "Cancelled",
+    "acknowledge": "Acknowledge", "navigate": "Navigate", "callSAPS": "Call SAPS",
+    "sending": "Sending SOS...", "sent_": "SOS Sent!",
+    "chooseType": "Choose SOS Type",
+    "attack": "Attack", "medical": "Medical", "fire": "Fire", "general": "General",
+    "standDown": "Stand Down — All Clear",
+    "standDownConfirm": "Confirm everything is safe and cancel the alert?",
+    "alertCancelled": "Alert cancelled — everyone notified",
+    "dms": "Dead Man\'s Switch",
+    "dmsDesc": "If your phone fails to check in within the interval, the server automatically sends SOS on your behalf.",
+    "armed": "Armed", "disarmed": "Disarmed",
+    "30min": "30 min", "1hr": "1 hour", "2hr": "2 hours", "4hr": "4 hours", "8hr": "8 hours"
+  },
+  "contacts": {
+    "title": "Emergency Contacts", "addContact": "Add Contact", "editContact": "Edit Contact",
+    "contactName": "Contact Name", "phone": "Phone Number",
+    "max20": "Maximum 20 contacts reached",
+    "testSms": "Send Test SMS", "testSmsSent": "Test SMS sent", "testSmsFailed": "Test SMS failed",
+    "saps": "SAPS", "ambulance": "Ambulance", "fire": "Fire", "neighbourhood": "Neighbourhood Watch",
+    "security": "Security", "farmwatch": "Farm Watch", "family": "Family"
+  },
+  "medical": {
+    "title": "Medical Profile", "bloodType": "Blood Type", "allergies": "Allergies",
+    "chronicConditions": "Chronic Conditions", "medications": "Medications",
+    "medicalAidName": "Medical Aid Name", "medicalAidNumber": "Medical Aid Number",
+    "nearestHospital": "Nearest Hospital", "doctorName": "Doctor Name", "doctorPhone": "Doctor Phone",
+    "info": "This information is included in medical emergency SMS messages."
+  },
+  "farm": {
+    "title": "Farm Profile", "plotNumber": "Plot / Erf Number", "gateGps": "Gate GPS",
+    "gateGpsDesc": "GPS of your farm gate — included in SOS SMS",
+    "nearestTown": "Nearest Town", "alertRadius": "Alert Radius", "setGateGps": "Set Gate GPS"
+  },
+  "admin": {
+    "title": "Admin", "manageUsers": "Manage Users", "pendingUsers": "Pending Users",
+    "approve": "Approve", "reject": "Reject", "stats": "Admin Stats",
+    "totalUsers": "Total Users", "activeSOS": "Active SOS"
+  },
+  "sosSettings": {
+    "title": "SOS Settings", "offlineQueue": "Offline Queue",
+    "noMessages": "No pending messages", "sendNow": "Send Now",
+    "satelliteSms": "Satellite SMS",
+    "satelliteDesc": "iPhone 14+ and Pixel 9+ can send emergency SMS via satellite when no signal is available."
+  },
+  "validation": {
+    "allRequired": "All fields are required",
+    "passwordMismatch": "Passwords do not match",
+    "passwordLength": "Password must be at least 8 characters",
+    "idNumber": "SA ID number must be 13 digits"
   }
 }
