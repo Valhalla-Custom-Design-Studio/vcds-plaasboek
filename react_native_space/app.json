@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Plaasboek\u2122",
+    "name": "Plaasboek™",
     "slug": "plaasboek",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#2D5016"
     },
     "ios": {
       "supportsTablet": true,
@@ -18,14 +18,23 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#2D5016"
       },
-      "package": "com.vcds.plaasboek"
+      "package": "com.vcds.plaasboek",
+      "permissions": ["ACCESS_FINE_LOCATION","ACCESS_COARSE_LOCATION","CAMERA","READ_EXTERNAL_STORAGE","WRITE_EXTERNAL_STORAGE","VIBRATE","RECEIVE_BOOT_COMPLETED"]
     },
+    "plugins": [
+      "expo-router",
+      "expo-location",
+      ["expo-camera", {"cameraPermission": "Allow Plaasboek to access your camera for photos."}],
+      ["expo-notifications", {"icon": "./assets/notification-icon.png","color": "#2D5016"}]
+    ],
+    "scheme": "plaasboek",
     "extra": {
       "eas": {
-        "projectId": "56de3c11-ecf2-4e1f-9349-b42b5fd1eb0e"
-      }
+        "projectId": "43a8ccbf-0000-0000-0000-000000000000"
+      },
+      "apiUrl": "https://vcds-plaasboek.up.railway.app"
     },
     "owner": "valhalla-custom-design-studios"
   }
