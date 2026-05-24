@@ -1,0 +1,63 @@
+name: APK Build Plaasboek
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: react_native_space
+
+jobs:
+  build:
+    name: APK Build Plaasboek
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install deps
+        run: npm ci --legacy-peer-deps
+
+      - name: Expo Prebuild
+        run: npx expo prebuild --platform android --clean --no-install
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Gradlew permission
+        run: chmod +x android/gradlew
+
+      - name: Build APK
+        run: ./gradlew assembleRelease --no-daemon
+        working-directory: react_native_space/android
+        env:
+          GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=512m"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plaasboek-apk
+          path: react_native_space/android/app/build/outputs/apk/release/*.apk
+          retention-days: 30
+
+      - name: Slack notify
+        if: always()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          JOB_STATUS: ${{ job.status }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -s -X POST \
+            -H "Content-type: application/json" \
+            -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+            --data "{\"channel\":\"vcds-ops\",\"text\":\"[APK] APK Build Plaasboek: $JOB_STATUS - $RUN_URL\"}" \
+            https://slack.com/api/chat.postMessage || true
