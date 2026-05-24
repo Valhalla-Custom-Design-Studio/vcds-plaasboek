@@ -1,4 +1,4 @@
-name: EAS APK Build — Plaasboek™
+name: EAS APK Build Plaasboek
 
 on:
   push:
@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       profile:
-        description: 'Build profile'
+        description: Build profile
         required: false
-        default: 'production'
+        default: production
         type: choice
         options:
           - production
@@ -16,7 +16,7 @@ on:
 
 jobs:
   eas-build:
-    name: Build APK — Plaasboek™
+    name: Build APK Plaasboek
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,7 +26,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: npm
           cache-dependency-path: react_native_space/package-lock.json
 
       - name: Install dependencies
@@ -45,27 +45,27 @@ jobs:
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Notify Slack — Success
+      - name: Notify Slack on Success
         if: success()
         uses: slackapi/slack-github-action@v1.26.0
         with:
-          channel-id: 'vcds-ops'
+          channel-id: vcds-ops
           slack-message: |
-            ✅ *Plaasboek™ APK Build QUEUED on EAS*
-            Profile: `${{ github.event.inputs.profile || 'production' }}`
+            [SUCCESS] Plaasboek APK Build QUEUED on EAS
+            Profile: ${{ github.event.inputs.profile || 'production' }}
             Triggered by: ${{ github.actor }}
-            <https://expo.dev/accounts/valhalla-custom-design-studios/builds|View on EAS>
+            View: https://expo.dev/accounts/valhalla-custom-design-studios/builds
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
-      - name: Notify Slack — Failure
+      - name: Notify Slack on Failure
         if: failure()
         uses: slackapi/slack-github-action@v1.26.0
         with:
-          channel-id: 'vcds-ops'
+          channel-id: vcds-ops
           slack-message: |
-            🔴 *Plaasboek™ APK Build FAILED*
+            [FAILED] Plaasboek APK Build FAILED
             Actor: ${{ github.actor }}
-            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Logs>
+            Logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
