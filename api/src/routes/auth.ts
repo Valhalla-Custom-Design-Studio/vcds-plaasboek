@@ -135,4 +135,35 @@ router.patch('/users/me', authenticate, async (req: AuthRequest, res: Response) 
   }
 });
 
+
+// PUT /api/auth/profile (alias for PATCH /api/users/me)
+router.put('/profile', authenticate, async (req: AuthRequest, res: Response) => {
+  try {
+    const allowed = [
+      'name','farm_name','latitude','longitude','language','plot_number',
+      'gate_latitude','gate_longitude','nearest_town','alert_radius_km',
+      'blood_type','allergies','chronic_conditions','medications',
+      'medical_aid_name','medical_aid_number','nearest_hospital','doctor_name','doctor_phone'
+    ];
+    const updates: string[] = [];
+    const values: any[] = [];
+    let idx = 1;
+    for (const key of allowed) {
+      const camel = key.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+      if (req.body[camel] !== undefined || req.body[key] !== undefined) {
+        updates.push(`${key}=$${idx++}`);
+        values.push(req.body[camel] ?? req.body[key]);
+      }
+    }
+    if (updates.length === 0) { res.status(400).json({ success: false, message: 'No valid fields to update' }); return; }
+    updates.push(`updated_at=NOW()`);
+    values.push(req.user!.id);
+    const result = await pool.query(
+      `UPDATE users SET ${updates.join(',')} WHERE id=$${idx} RETURNING id, email, name, farm_name, role, status, tier, language`,
+      values
+    );
+    res.json({ success: true, user: result.rows[0] });
+  } catch (err: any) { res.status(500).json({ success: false, message: err.message }); }
+});
+
 export default router;

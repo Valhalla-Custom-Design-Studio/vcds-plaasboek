@@ -3,6 +3,20 @@ import { api } from './api';
 
 const QUEUE_KEY = 'plaasboek_offline_queue';
 
+export interface FarmRecord {
+  id: string;
+  type: 'income' | 'expense';
+  amount: number;
+  category: string;
+  description: string;
+  date: string;
+}
+
+const RECORDS_CACHE_KEY = 'plaasboek_records_cache';
+const RECORDS_CACHE_TS_KEY = 'plaasboek_records_cache_ts';
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+
 interface QueueItem {
   id: string;
   type: string;
@@ -78,4 +92,30 @@ export const OfflineSyncService = {
   async clear(): Promise<void> {
     await AsyncStorage.removeItem(QUEUE_KEY);
   },
+
+  async getRecords(token: string): Promise<FarmRecord[]> {
+    try {
+      const { default: axios } = await import('axios');
+      const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://plaasboek-api.railway.app/api';
+      const res = await axios.get(`${BASE_URL}/expenses`, { headers: { Authorization: `Bearer ${token}` } });
+      const items: FarmRecord[] = (res.data?.items || []).map((e: any) => ({
+        id: e.id, type: 'expense' as const, amount: parseFloat(e.amount), category: e.category, description: e.description, date: e.date,
+      }));
+      await AsyncStorage.setItem(RECORDS_CACHE_KEY, JSON.stringify(items));
+      await AsyncStorage.setItem(RECORDS_CACHE_TS_KEY, Date.now().toString());
+      return items;
+    } catch {
+      const cached = await AsyncStorage.getItem(RECORDS_CACHE_KEY);
+      return cached ? JSON.parse(cached) : [];
+    }
+  },
+
+  async isCacheStale(): Promise<boolean> {
+    try {
+      const ts = await AsyncStorage.getItem(RECORDS_CACHE_TS_KEY);
+      if (!ts) return true;
+      return Date.now() - parseInt(ts) > CACHE_TTL_MS;
+    } catch { return true; }
+  },
+
 };

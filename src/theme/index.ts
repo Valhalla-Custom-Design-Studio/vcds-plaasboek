@@ -38,6 +38,13 @@ export const Colors = {
   equipment: '#F59E0B',
   other: '#6B7280',
 
+  // SOS color aliases
+  medical: '#2563EB', // alias for info
+
+  // Aliases
+  text: '#F0FDF4', // alias for textPrimary
+  border: '#2A3F2F', // alias for surfaceBorder
+
   // Misc
   gold: '#F59E0B',
   overlay: 'rgba(0,0,0,0.6)',

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Switch, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { OfflineSyncService, FarmRecord } from '../../src/services/OfflineSyncService';
+import { OfflineSyncService } from '../../src/services/OfflineSyncService';
+import type { FarmRecord } from '../../src/services/OfflineSyncService';
 
 const strings = {
   en: { title: "Records", income: "Income", expense: "Expense", all: "All", add: "Add", date: "Date", amount: "Amount", category: "Category", offline: "Offline — cached data", loading: "Loading..." },

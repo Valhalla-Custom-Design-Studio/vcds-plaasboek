@@ -51,7 +51,10 @@
     "anErrorOccurred": "'n Fout het voorgekom",
     "noData": "Geen data nie",
     "yes": "Ja",
-    "no": "Nee"
+    "no": "Nee",
+    "back": "Terug",
+    "failedToLoad": "Kon nie data laai nie",
+    "failedToSave": "Kon nie stoor nie"
   },
   "offline": {
     "banner": "Vanlyn — Data word gestoor",
@@ -194,10 +197,29 @@
     "armed": "Gewapen"
   },
   "contacts": {
-    "title": "Kontakte"
+    "title": "Kontakte",
+    "testSmsSent": "Toets SMS suksesvol gestuur",
+    "testSmsFailed": "Kon nie toets SMS stuur nie",
+    "addContact": "Voeg Kontak By",
+    "editContact": "Wysig Kontak",
+    "name": "Naam",
+    "phone": "Telefoon",
+    "category": "Kategorie",
+    "relationship": "Verhouding",
+    "testSms": "Toets SMS"
   },
   "medical": {
-    "title": "Mediese Profiel"
+    "title": "Mediese Profiel",
+    "info": "Hierdie inligting word in jou SOS-alarm ingesluit om nooddienste te help.",
+    "bloodType": "Bloedgroep",
+    "allergies": "Allergieë",
+    "chronicConditions": "Chroniese Toestande",
+    "medications": "Medikasie",
+    "medicalAidName": "Mediese Fondsnaam",
+    "medicalAidNumber": "Mediese Fondsnommer",
+    "nearestHospital": "Naaste Hospitaal",
+    "doctorName": "Dokternaam",
+    "doctorPhone": "Dokter Telefoon"
   },
   "farm": {
     "title": "Plaasprofiel",

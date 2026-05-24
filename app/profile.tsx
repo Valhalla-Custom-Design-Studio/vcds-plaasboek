@@ -50,6 +50,10 @@ export default function ProfileScreen() {
 
       <GlassCard style={styles.section}>
         <Text style={styles.sectionTitle}>Navigasie</Text>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/(tabs)/emergencies/farm-profile')}>
+          <Text style={styles.navItemText}>🌾 {t('farm.title')}</Text>
+          <Text style={styles.navArrow}>›</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.navItem} onPress={() => router.push('/(tabs)/emergencies/contacts')}>
           <Text style={styles.navItemText}>📞 Noodkontakte</Text>
           <Text style={styles.navArrow}>›</Text>

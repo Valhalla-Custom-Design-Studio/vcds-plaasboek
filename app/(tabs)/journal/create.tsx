@@ -11,7 +11,7 @@ const WEATHER_OPTIONS = ['sunny','cloudy','rainy','stormy','windy','cold'];
 
 export default function JournalCreateScreen() {
   const { t } = useLanguage();
-  const { isOnline, queueAction } = useOffline();
+  const { isOnline, enqueue } = useOffline();
   const [form, setForm] = useState({ weather: '', rainfallMm: '', activities: '', notes: '', entryDate: new Date().toISOString().split('T')[0], entryTime: new Date().toTimeString().slice(0,5) });
   const [loading, setLoading] = useState(false);
 
@@ -24,7 +24,7 @@ export default function JournalCreateScreen() {
       if (isOnline) {
         await api.post('/journal', { ...form, rainfallMm: form.rainfallMm ? parseFloat(form.rainfallMm) : null });
       } else {
-        await queueAction('journal:create', { ...form, rainfallMm: form.rainfallMm ? parseFloat(form.rainfallMm) : null });
+        await enqueue('journal_create', { ...form, rainfallMm: form.rainfallMm ? parseFloat(form.rainfallMm) : null });
         Alert.alert(t('common.saved'), t('offline.savedOffline'));
       }
       router.back();
@@ -36,7 +36,7 @@ export default function JournalCreateScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}><Text style={styles.back}>← {t('common.back')}</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => router.back()}><Text style={styles.back}>← {'← Terug'}</Text></TouchableOpacity>
         <Text style={styles.title}>{t('journal.addEntry')}</Text>
       </View>
       <View style={styles.form}>

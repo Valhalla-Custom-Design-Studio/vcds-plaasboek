@@ -26,7 +26,7 @@ export default function AdminUsersScreen() {
 
   const handleAction = async (userId: string, action: 'approve' | 'reject') => {
     try {
-      await api.patch(`/admin/users/${userId}`, { status: action === 'approve' ? 'approved' : 'rejected' });
+      await api.patch(`/admin/users/${userId}/status`, { status: action === 'approve' ? 'approved' : 'rejected' });
       load();
     } catch { Alert.alert(t('common.error'), t('common.anErrorOccurred')); }
   };

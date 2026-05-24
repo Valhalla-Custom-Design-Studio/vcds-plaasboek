@@ -307,4 +307,17 @@ router.post('/check-expired-switches', async (req: Request, res: Response) => {
   } catch (err: any) { res.status(500).json({ success: false, message: err.message }); }
 });
 
+
+// PATCH /api/sos/:id/resolve — Admin resolve SOS event
+router.patch('/:id/resolve', authenticate, async (req: AuthRequest, res: Response) => {
+  try {
+    if (req.user!.role !== 'admin') { res.status(403).json({ success: false, message: 'Admin only' }); return; }
+    await pool.query(
+      'UPDATE sos_events SET resolved=true, resolved_by=$1, resolved_at=NOW() WHERE id=$2',
+      [req.user!.id, req.params.id]
+    );
+    res.json({ success: true });
+  } catch (err: any) { res.status(500).json({ success: false, message: err.message }); }
+});
+
 export default router;

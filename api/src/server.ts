@@ -64,8 +64,8 @@ app.use('/api/', limiter);
 app.get('/health', (_, res) => res.json({ status: 'ok', service: 'plaasboek-api', timestamp: new Date().toISOString() }));
 
 // Routes
-app.post('/api/signup', authRouter);
-app.use('/api/auth', authRouter);
+app.use('/api/auth', authRouter); // handles /api/auth/login, /api/auth/me, /api/auth/profile
+app.use('/api/signup', authRouter); // handles /api/signup (POST)
 app.use('/api/users', authRouter);
 app.use('/api/journal', journalRouter);
 app.use('/api/rainfall', rainfallRouter);

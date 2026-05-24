@@ -51,7 +51,10 @@
     "anErrorOccurred": "An error occurred",
     "noData": "No data",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "back": "Back",
+    "failedToLoad": "Failed to load data",
+    "failedToSave": "Failed to save"
   },
   "offline": {
     "banner": "Offline — Data will be saved",
@@ -194,10 +197,29 @@
     "armed": "Armed"
   },
   "contacts": {
-    "title": "Contacts"
+    "title": "Contacts",
+    "testSmsSent": "Test SMS sent successfully",
+    "testSmsFailed": "Failed to send test SMS",
+    "addContact": "Add Contact",
+    "editContact": "Edit Contact",
+    "name": "Name",
+    "phone": "Phone",
+    "category": "Category",
+    "relationship": "Relationship",
+    "testSms": "Test SMS"
   },
   "medical": {
-    "title": "Medical Profile"
+    "title": "Medical Profile",
+    "info": "This information is included in your SOS alert to help emergency services.",
+    "bloodType": "Blood Type",
+    "allergies": "Allergies",
+    "chronicConditions": "Chronic Conditions",
+    "medications": "Medications",
+    "medicalAidName": "Medical Aid Name",
+    "medicalAidNumber": "Medical Aid Number",
+    "nearestHospital": "Nearest Hospital",
+    "doctorName": "Doctor's Name",
+    "doctorPhone": "Doctor's Phone"
   },
   "farm": {
     "title": "Farm Profile",

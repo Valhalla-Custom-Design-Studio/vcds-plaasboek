@@ -7,6 +7,7 @@ interface OfflineContextType {
   isSyncing: boolean;
   pendingCount: number;
   enqueue: (type: string, data: Record<string, any>) => Promise<void>;
+  queueAction: (type: string, data: Record<string, any>) => Promise<void>; // alias for enqueue
   flush: () => Promise<void>;
   flushQueue: () => Promise<void>; // alias for flush
 }
@@ -54,7 +55,7 @@ export function OfflineProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <OfflineContext.Provider value={{ isOnline, isSyncing, pendingCount, enqueue, flush, flushQueue: flush }}>
+    <OfflineContext.Provider value={{ isOnline, isSyncing, pendingCount, enqueue, queueAction: enqueue, flush, flushQueue: flush }}>
       {children}
     </OfflineContext.Provider>
   );
