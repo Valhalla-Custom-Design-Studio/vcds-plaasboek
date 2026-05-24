@@ -12,7 +12,11 @@
     "submit": "Dien in",
     "currency": "ZAR",
     "dateFormat": "DD/MM/JJJJ",
-    "units": "metriek"
+    "units": "metriek",
+    "failedToLoad": "Kon nie data laai nie. Probeer asseblief weer.",
+    "failedToSave": "Kon nie stoor nie. Probeer asseblief weer.",
+    "noData": "Geen data beskikbaar nie.",
+    "offline": "Jy is vanlyn. Wys kas-data."
   },
   "auth": {
     "login": "Teken In",
@@ -21,7 +25,8 @@
     "email": "E-posadres",
     "password": "Wagwoord",
     "forgotPassword": "Wagwoord vergeet?",
-    "resetPassword": "Stel Wagwoord Terug"
+    "resetPassword": "Stel Wagwoord Terug",
+    "adminApprovalNote": "Jou rekening wag op admin-goedkeuring."
   },
   "payment": {
     "subscribe": "Teken Nou In",
@@ -33,6 +38,63 @@
     "paymentSuccess": "Betaling suksesvol!",
     "paymentFailed": "Betaling het misluk. Probeer asseblief weer.",
     "freeTrial": "Begin 7-Dag Gratis Proeftydperk"
+  },
+  "records": {
+    "title": "Rekords",
+    "income": "Inkomste",
+    "expense": "Uitgawe",
+    "all": "Alles",
+    "add": "Voeg Rekord By",
+    "date": "Datum",
+    "amount": "Bedrag",
+    "category": "Kategorie",
+    "offline": "Vanlyn — kas-data",
+    "loading": "Laai rekords...",
+    "noData": "Geen rekords gevind nie.",
+    "pendingSync": "Wag op sinkronisering"
+  },
+  "expenses": {
+    "title": "Uitgawes",
+    "add": "Voeg Uitgawe By",
+    "total": "Totaal Hierdie Maand",
+    "noData": "Geen uitgawes nog nie"
+  },
+  "livestock": {
+    "title": "Vee",
+    "add": "Voeg Dier By",
+    "total": "Totale Diere",
+    "noData": "Geen vee aangeteken nie"
+  },
+  "workers": {
+    "title": "Werkers",
+    "add": "Voeg Werker By",
+    "total": "Totale Maandelikse Lone",
+    "noData": "Geen werkers aangeteken nie",
+    "active": "Aktief"
+  },
+  "reports": {
+    "title": "Verslae",
+    "income": "Inkomste",
+    "expenses": "Uitgawes",
+    "net": "Netto Wins",
+    "thisYear": "Hierdie Jaar",
+    "monthly": "Maandelikse Uiteensetting",
+    "topCats": "Top Uitgawe Kategorieë",
+    "noData": "Geen data nog nie",
+    "export": "Voer CSV Uit"
+  },
+  "settings": {
+    "title": "Instellings",
+    "language": "Taal",
+    "account": "Rekening",
+    "logout": "Teken Uit",
+    "subscription": "Intekening",
+    "about": "Oor",
+    "version": "Weergawe",
+    "privacy": "Privaatheidsbeleid",
+    "terms": "Diensbepalings",
+    "notifications": "Kennisgewings",
+    "clearCache": "Maak Kas Skoon"
   },
   "accessibility": {
     "skipToMain": "Spring na hoofinhoud",

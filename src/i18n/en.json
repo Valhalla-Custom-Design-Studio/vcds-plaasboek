@@ -12,7 +12,11 @@
     "submit": "Submit",
     "currency": "ZAR",
     "dateFormat": "DD/MM/YYYY",
-    "units": "metric"
+    "units": "metric",
+    "failedToLoad": "Failed to load data. Please try again.",
+    "failedToSave": "Failed to save. Please try again.",
+    "noData": "No data available.",
+    "offline": "You are offline. Showing cached data."
   },
   "auth": {
     "login": "Log In",
@@ -21,7 +25,8 @@
     "email": "Email Address",
     "password": "Password",
     "forgotPassword": "Forgot Password?",
-    "resetPassword": "Reset Password"
+    "resetPassword": "Reset Password",
+    "adminApprovalNote": "Your account is pending admin approval."
   },
   "payment": {
     "subscribe": "Subscribe Now",
@@ -33,6 +38,63 @@
     "paymentSuccess": "Payment successful!",
     "paymentFailed": "Payment failed. Please try again.",
     "freeTrial": "Start 7-Day Free Trial"
+  },
+  "records": {
+    "title": "Records",
+    "income": "Income",
+    "expense": "Expense",
+    "all": "All",
+    "add": "Add Record",
+    "date": "Date",
+    "amount": "Amount",
+    "category": "Category",
+    "offline": "Offline — cached data",
+    "loading": "Loading records...",
+    "noData": "No records found.",
+    "pendingSync": "Pending sync"
+  },
+  "expenses": {
+    "title": "Expenses",
+    "add": "Add Expense",
+    "total": "Total This Month",
+    "noData": "No expenses yet"
+  },
+  "livestock": {
+    "title": "Livestock",
+    "add": "Add Animal",
+    "total": "Total Animals",
+    "noData": "No livestock recorded"
+  },
+  "workers": {
+    "title": "Workers",
+    "add": "Add Worker",
+    "total": "Total Monthly Wages",
+    "noData": "No workers recorded",
+    "active": "Active"
+  },
+  "reports": {
+    "title": "Reports",
+    "income": "Income",
+    "expenses": "Expenses",
+    "net": "Net Profit",
+    "thisYear": "This Year",
+    "monthly": "Monthly Breakdown",
+    "topCats": "Top Expense Categories",
+    "noData": "No data yet",
+    "export": "Export CSV"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "account": "Account",
+    "logout": "Log Out",
+    "subscription": "Subscription",
+    "about": "About",
+    "version": "Version",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "notifications": "Notifications",
+    "clearCache": "Clear Cache"
   },
   "accessibility": {
     "skipToMain": "Skip to main content",

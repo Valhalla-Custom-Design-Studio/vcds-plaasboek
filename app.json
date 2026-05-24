@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "Plaasboek",
+    "slug": "plaasboek",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#1c1007"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "co.za.vcds.plaasboek"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1c1007"
+      },
+      "package": "co.za.vcds.plaasboek",
+      "permissions": ["INTERNET", "ACCESS_NETWORK_STATE"]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0"
+          }
+        }
+      ]
+    ],
+    "scheme": "plaasboek",
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
