@@ -1,78 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Switch, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import { router } from 'expo-router';
+import { useAuth } from '../../src/context/AuthContext';
+import { useLanguage } from '../../src/context/LanguageContext';
+import { GradientButton } from '../../src/components/GradientButton';
+import { Colors, Spacing, Radius } from '../../src/theme';
 
-const strings = {
-  en: { title: "Plaasboek™", login: "Log In", email: "Email address", password: "Password", forgot: "Forgot password?", no_account: "Don't have an account?", register: "Register", or: "or", google: "Continue with Google" },
-  af: { title: "Plaasboek™", login: "Teken In", email: "E-posadres", password: "Wagwoord", forgot: "Wagwoord vergeet?", no_account: "Geen rekening nie?", register: "Registreer", or: "of", google: "Gaan voort met Google" },
-};
-
-export default function Login({ navigation }: any) {
-  const [lang, setLang] = useState<'en'|'af'>('af');
+export default function LoginScreen() {
+  const { login } = useAuth();
+  const { t, language, toggleLanguage } = useLanguage();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const t = strings[lang];
-
-  useEffect(() => { AsyncStorage.getItem('lang').then(v => v && setLang(v as any)); }, []);
-  const toggleLang = (v: boolean) => { const l = v ? 'af' : 'en'; setLang(l); AsyncStorage.setItem('lang', l); };
 
   const handleLogin = async () => {
-    if (!email || !password) { Alert.alert('Error', lang==='af' ? 'Vul alle velde in' : 'Please fill in all fields'); return; }
+    if (!email || !password) { Alert.alert(t('common.error'), t('validation.allRequired')); return; }
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/login`, {
-        method: 'POST', headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Login failed');
-      await AsyncStorage.setItem('token', data.token);
-      navigation?.replace('Home');
-    } catch (e: any) {
-      Alert.alert('Error', e.message);
+      await login(email.trim(), password);
+      router.replace('/(tabs)/journal');
+    } catch (err: any) {
+      Alert.alert(t('common.error'), err.message);
     } finally { setLoading(false); }
   };
 
   return (
-    <View style={s.container}>
-      <View style={s.header}>
-        <Text style={s.title}>{t.title}</Text>
-        <View style={s.langRow}><Text style={s.langLabel}>EN</Text><Switch value={lang==='af'} onValueChange={toggleLang} trackColor={{true:'#92400e'}}/><Text style={s.langLabel}>AF</Text></View>
-      </View>
-      <View style={s.form}>
-        <TextInput style={s.input} placeholder={t.email} placeholderTextColor="#64748b" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" accessibilityLabel={t.email} />
-        <TextInput style={s.input} placeholder={t.password} placeholderTextColor="#64748b" value={password} onChangeText={setPassword} secureTextEntry accessibilityLabel={t.password} />
-        <TouchableOpacity style={s.forgot}><Text style={[s.forgotTxt, {color:'#92400e'}]}>{t.forgot}</Text></TouchableOpacity>
-        <TouchableOpacity style={[s.loginBtn, {backgroundColor:'#92400e'}]} onPress={handleLogin} disabled={loading} accessibilityRole="button" accessibilityLabel={t.login}>
-          <Text style={s.loginTxt}>{loading ? '...' : t.login}</Text>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <TouchableOpacity style={styles.langToggle} onPress={toggleLanguage}>
+        <Text style={styles.langText}>{language === 'af' ? 'EN' : 'AF'}</Text>
+      </TouchableOpacity>
+      <Text style={styles.logo}>🌾</Text>
+      <Text style={styles.title}>Plaasboek</Text>
+      <Text style={styles.tagline}>Jou plaas. Jou data. Jou veiligheid.</Text>
+      <View style={styles.form}>
+        <TextInput style={styles.input} placeholder={t('auth.email')} placeholderTextColor={Colors.textMuted}
+          value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
+        <TextInput style={styles.input} placeholder={t('auth.password')} placeholderTextColor={Colors.textMuted}
+          value={password} onChangeText={setPassword} secureTextEntry />
+        <GradientButton title={t('auth.signIn')} onPress={handleLogin} loading={loading} style={{ marginTop: 8 }} />
+        <TouchableOpacity style={styles.link} onPress={() => router.push('/auth/register')}>
+          <Text style={styles.linkText}>{t('auth.noAccount')}</Text>
         </TouchableOpacity>
-        <Text style={s.orTxt}>{t.or}</Text>
-        <TouchableOpacity style={s.googleBtn} accessibilityRole="button" accessibilityLabel={t.google}>
-          <Text style={s.googleTxt}>{t.google}</Text>
-        </TouchableOpacity>
-        <View style={s.registerRow}>
-          <Text style={s.registerPrompt}>{t.no_account} </Text>
-          <TouchableOpacity onPress={()=>navigation?.navigate('Register')}><Text style={[s.registerLink, {color:'#92400e'}]}>{t.register}</Text></TouchableOpacity>
-        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
-const s = StyleSheet.create({
-  container:{flex:1,backgroundColor:'#1c1007',justifyContent:'center'},
-  header:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',paddingHorizontal:24,paddingTop:50,paddingBottom:20},
-  title:{fontSize:26,fontWeight:'bold',color:'#f8fafc'},
-  langRow:{flexDirection:'row',alignItems:'center',gap:6}, langLabel:{color:'#94a3b8',fontSize:12},
-  form:{paddingHorizontal:24},
-  input:{backgroundColor:'#1e293b',color:'#f1f5f9',padding:14,borderRadius:10,marginBottom:12,fontSize:15},
-  forgot:{alignSelf:'flex-end',marginBottom:16}, forgotTxt:{fontSize:13},
-  loginBtn:{padding:16,borderRadius:10,alignItems:'center',marginBottom:16},
-  loginTxt:{color:'#fff',fontWeight:'bold',fontSize:16},
-  orTxt:{textAlign:'center',color:'#64748b',marginBottom:16},
-  googleBtn:{padding:14,borderRadius:10,alignItems:'center',backgroundColor:'#1e293b',marginBottom:20},
-  googleTxt:{color:'#f1f5f9',fontWeight:'600'},
-  registerRow:{flexDirection:'row',justifyContent:'center'},
-  registerPrompt:{color:'#94a3b8'}, registerLink:{fontWeight:'bold'},
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: Colors.background },
+  content: { flexGrow: 1, justifyContent: 'center', padding: Spacing.xl },
+  langToggle: { position: 'absolute', top: 60, right: 24, backgroundColor: Colors.surface, paddingHorizontal: 12, paddingVertical: 6, borderRadius: Radius.full, borderWidth: 1, borderColor: Colors.surfaceBorder },
+  langText: { color: Colors.textPrimary, fontWeight: '700', fontSize: 13 },
+  logo: { fontSize: 64, textAlign: 'center', marginBottom: 8 },
+  title: { fontSize: 36, fontWeight: 'bold', color: Colors.textPrimary, textAlign: 'center', fontFamily: 'Georgia' },
+  tagline: { fontSize: 14, color: Colors.textSecondary, textAlign: 'center', marginBottom: 40 },
+  form: { gap: 12 },
+  input: { height: 52, backgroundColor: Colors.inputBg, borderWidth: 1, borderColor: Colors.inputBorder, borderRadius: Radius.md, paddingHorizontal: 16, color: Colors.textPrimary, fontSize: 16 },
+  link: { alignItems: 'center', paddingVertical: 12 },
+  linkText: { color: Colors.primary, fontSize: 15 },
 });

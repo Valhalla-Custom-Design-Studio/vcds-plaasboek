@@ -1,88 +1,68 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Switch, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import { router } from 'expo-router';
+import { useAuth } from '../../src/context/AuthContext';
+import { useLanguage } from '../../src/context/LanguageContext';
+import { GradientButton } from '../../src/components/GradientButton';
+import { Colors, Spacing, Radius } from '../../src/theme';
 
-const strings = {
-  en: { title: "Plaasboek™", register: "Create Account", name: "Full name", email: "Email address", password: "Password", confirm: "Confirm password", terms: "I agree to the Terms & Privacy Policy", submit: "Create Account", have_account: "Already have an account?", login: "Log In" },
-  af: { title: "Plaasboek™", register: "Skep Rekening", name: "Volle naam", email: "E-posadres", password: "Wagwoord", confirm: "Bevestig wagwoord", terms: "Ek stem saam met die Bepalings & Privaatheidsbeleid", submit: "Skep Rekening", have_account: "Het reeds 'n rekening?", login: "Teken In" },
-};
-
-export default function Register({ navigation }: any) {
-  const [lang, setLang] = useState<'en'|'af'>('af');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
-  const [agreed, setAgreed] = useState(false);
+export default function RegisterScreen() {
+  const { signup } = useAuth();
+  const { t, language, toggleLanguage } = useLanguage();
+  const [form, setForm] = useState({ name: '', email: '', farmName: '', password: '', confirmPassword: '' });
   const [loading, setLoading] = useState(false);
-  const t = strings[lang];
 
-  useEffect(() => { AsyncStorage.getItem('lang').then(v => v && setLang(v as any)); }, []);
-  const toggleLang = (v: boolean) => { const l = v ? 'af' : 'en'; setLang(l); AsyncStorage.setItem('lang', l); };
-
-  const handleRegister = async () => {
-    if (!name || !email || !password || !confirm) { Alert.alert('Error', lang==='af' ? 'Vul alle velde in' : 'Please fill in all fields'); return; }
-    if (password !== confirm) { Alert.alert('Error', lang==='af' ? 'Wagwoorde stem nie ooreen nie' : 'Passwords do not match'); return; }
-    if (!agreed) { Alert.alert('Error', lang==='af' ? 'Stem saam met bepalings' : 'Please agree to terms'); return; }
+  const handleSignup = async () => {
+    if (!form.name || !form.email || !form.password) { Alert.alert(t('common.error'), t('validation.allRequired')); return; }
+    if (form.password.length < 8) { Alert.alert(t('common.error'), t('validation.passwordLength')); return; }
+    if (form.password !== form.confirmPassword) { Alert.alert(t('common.error'), t('validation.passwordMismatch')); return; }
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/register`, {
-        method: 'POST', headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ name, email, password }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Registration failed');
-      await AsyncStorage.setItem('token', data.token);
-      navigation?.replace('Home');
-    } catch (e: any) {
-      Alert.alert('Error', e.message);
+      await signup({ name: form.name, email: form.email.trim(), farmName: form.farmName, password: form.password });
+      router.replace('/(tabs)/journal');
+    } catch (err: any) {
+      Alert.alert(t('common.error'), err.message);
     } finally { setLoading(false); }
   };
 
+  const update = (key: string, val: string) => setForm(prev => ({ ...prev, [key]: val }));
+
   return (
-    <ScrollView style={s.container} contentContainerStyle={{paddingBottom:40}}>
-      <View style={s.header}>
-        <Text style={s.title}>{t.title}</Text>
-        <View style={s.langRow}><Text style={s.langLabel}>EN</Text><Switch value={lang==='af'} onValueChange={toggleLang} trackColor={{true:'#92400e'}}/><Text style={s.langLabel}>AF</Text></View>
-      </View>
-      <View style={s.form}>
-        <Text style={s.heading}>{t.register}</Text>
-        <TextInput style={s.input} placeholder={t.name} placeholderTextColor="#64748b" value={name} onChangeText={setName} accessibilityLabel={t.name} />
-        <TextInput style={s.input} placeholder={t.email} placeholderTextColor="#64748b" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" accessibilityLabel={t.email} />
-        <TextInput style={s.input} placeholder={t.password} placeholderTextColor="#64748b" value={password} onChangeText={setPassword} secureTextEntry accessibilityLabel={t.password} />
-        <TextInput style={s.input} placeholder={t.confirm} placeholderTextColor="#64748b" value={confirm} onChangeText={setConfirm} secureTextEntry accessibilityLabel={t.confirm} />
-        <TouchableOpacity style={s.termsRow} onPress={()=>setAgreed(!agreed)} accessibilityRole="checkbox" accessibilityState={{checked:agreed}}>
-          <View style={[s.checkbox, agreed && {backgroundColor:'#92400e', borderColor:'#92400e'}]}>
-            {agreed && <Text style={s.checkmark}>✓</Text>}
-          </View>
-          <Text style={s.termsText}>{t.terms}</Text>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <TouchableOpacity style={styles.langToggle} onPress={toggleLanguage}>
+        <Text style={styles.langText}>{language === 'af' ? 'EN' : 'AF'}</Text>
+      </TouchableOpacity>
+      <Text style={styles.title}>Plaasboek</Text>
+      <Text style={styles.subtitle}>{t('auth.adminApprovalNote')}</Text>
+      <View style={styles.form}>
+        {[
+          { key: 'name', label: t('auth.name'), opts: {} },
+          { key: 'email', label: t('auth.email'), opts: { keyboardType: 'email-address', autoCapitalize: 'none' } },
+          { key: 'farmName', label: t('auth.farmName'), opts: {} },
+          { key: 'password', label: t('auth.password'), opts: { secureTextEntry: true } },
+          { key: 'confirmPassword', label: t('auth.confirmPassword'), opts: { secureTextEntry: true } },
+        ].map(({ key, label, opts }) => (
+          <TextInput key={key} style={styles.input} placeholder={label} placeholderTextColor={Colors.textMuted}
+            value={(form as any)[key]} onChangeText={v => update(key, v)} {...opts as any} />
+        ))}
+        <GradientButton title={t('auth.signUp')} onPress={handleSignup} loading={loading} style={{ marginTop: 8 }} />
+        <TouchableOpacity style={styles.link} onPress={() => router.push('/auth/login')}>
+          <Text style={styles.linkText}>{t('auth.alreadyRegistered')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[s.submitBtn, {backgroundColor:'#92400e'}]} onPress={handleRegister} disabled={loading} accessibilityRole="button">
-          <Text style={s.submitTxt}>{loading ? '...' : t.submit}</Text>
-        </TouchableOpacity>
-        <View style={s.loginRow}>
-          <Text style={s.loginPrompt}>{t.have_account} </Text>
-          <TouchableOpacity onPress={()=>navigation?.navigate('Login')}><Text style={[s.loginLink, {color:'#92400e'}]}>{t.login}</Text></TouchableOpacity>
-        </View>
       </View>
     </ScrollView>
   );
 }
 
-const s = StyleSheet.create({
-  container:{flex:1,backgroundColor:'#1c1007'},
-  header:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',paddingHorizontal:24,paddingTop:50,paddingBottom:10},
-  title:{fontSize:24,fontWeight:'bold',color:'#f8fafc'},
-  langRow:{flexDirection:'row',alignItems:'center',gap:6}, langLabel:{color:'#94a3b8',fontSize:12},
-  form:{paddingHorizontal:24,paddingTop:10},
-  heading:{fontSize:22,fontWeight:'bold',color:'#f1f5f9',marginBottom:20},
-  input:{backgroundColor:'#1e293b',color:'#f1f5f9',padding:14,borderRadius:10,marginBottom:12,fontSize:15},
-  termsRow:{flexDirection:'row',alignItems:'center',marginBottom:20,gap:10},
-  checkbox:{width:22,height:22,borderRadius:4,borderWidth:2,borderColor:'#475569',alignItems:'center',justifyContent:'center'},
-  checkmark:{color:'#fff',fontSize:14,fontWeight:'bold'},
-  termsText:{color:'#94a3b8',fontSize:13,flex:1},
-  submitBtn:{padding:16,borderRadius:10,alignItems:'center',marginBottom:20},
-  submitTxt:{color:'#fff',fontWeight:'bold',fontSize:16},
-  loginRow:{flexDirection:'row',justifyContent:'center'},
-  loginPrompt:{color:'#94a3b8'}, loginLink:{fontWeight:'bold'},
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: Colors.background },
+  content: { flexGrow: 1, justifyContent: 'center', padding: Spacing.xl },
+  langToggle: { position: 'absolute', top: 60, right: 24, backgroundColor: Colors.surface, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, borderWidth: 1, borderColor: Colors.surfaceBorder },
+  langText: { color: Colors.textPrimary, fontWeight: '700', fontSize: 13 },
+  title: { fontSize: 32, fontWeight: 'bold', color: Colors.textPrimary, textAlign: 'center', fontFamily: 'Georgia', marginBottom: 8 },
+  subtitle: { fontSize: 13, color: Colors.warning, textAlign: 'center', marginBottom: 32, paddingHorizontal: 16 },
+  form: { gap: 12 },
+  input: { height: 52, backgroundColor: Colors.inputBg, borderWidth: 1, borderColor: Colors.inputBorder, borderRadius: 12, paddingHorizontal: 16, color: Colors.textPrimary, fontSize: 16 },
+  link: { alignItems: 'center', paddingVertical: 12 },
+  linkText: { color: Colors.primary, fontSize: 15 },
 });

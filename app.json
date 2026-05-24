@@ -1,0 +1,106 @@
+{
+  "expo": {
+    "name": "Plaasboek",
+    "slug": "plaasboek",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./src/assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0C1A0F"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "co.za.vcds.plaasboek",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Plaasboek uses your location for SOS emergency alerts.",
+        "NSLocationAlwaysUsageDescription": "Plaasboek uses your location for Dead Man Switch background monitoring.",
+        "NSCameraUsageDescription": "Plaasboek uses your camera to add photos to journal entries.",
+        "NSPhotoLibraryUsageDescription": "Plaasboek accesses your photo library to attach images to journal entries."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/adaptive-icon.png",
+        "backgroundColor": "#0C1A0F"
+      },
+      "package": "co.za.vcds.plaasboek",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "SEND_SMS",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "plaasboek"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
+    },
+    "web": {
+      "favicon": "./src/assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Plaasboek uses your location for SOS emergency alerts and Dead Man Switch monitoring."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./src/assets/notification-icon.png",
+          "color": "#15803D",
+          "sounds": []
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Plaasboek accesses your photos to attach images to journal entries.",
+          "cameraPermission": "Plaasboek uses your camera to add photos to journal entries."
+        }
+      ]
+    ],
+    "scheme": "plaasboek",
+    "extra": {
+      "eas": {
+        "projectId": "plaasboek-vcds"
+      }
+    },
+    "experiments": {
+      "typedRoutes": true
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/plaasboek-vcds",
+      "enabled": true,
+      "fallbackToCacheTimeout": 0
+    }
+  }
+}

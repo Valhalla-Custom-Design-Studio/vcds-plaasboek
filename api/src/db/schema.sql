@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS plans (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name VARCHAR(100) NOT NULL,
-  tier_name VARCHAR(20) NOT NULL,
+  tier_name VARCHAR(20) NOT NULL CHECK (tier_name IN ('free','pro')),
   price_zar DECIMAL(10,2) NOT NULL DEFAULT 0,
   description TEXT,
   features JSONB DEFAULT '[]',
@@ -42,11 +42,11 @@ CREATE TABLE IF NOT EXISTS subscriptions (
 
 CREATE TABLE IF NOT EXISTS payments (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES users(id),
-  plan_id UUID NOT NULL REFERENCES plans(id),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  plan_id UUID REFERENCES plans(id) ON DELETE SET NULL,
   amount_zar DECIMAL(10,2) NOT NULL,
-  status VARCHAR(20) DEFAULT 'pending',
-  payfast_payment_id VARCHAR(255) UNIQUE,
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending','completed','failed','refunded')),
+  payfast_payment_id VARCHAR(255),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

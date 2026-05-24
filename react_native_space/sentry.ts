@@ -1,14 +1,14 @@
 import * as Sentry from '@sentry/react-native';
 
-export const initSentry = () => {
+export function initSentry() {
+  const dsn = process.env.EXPO_PUBLIC_SENTRY_DSN;
+  if (!dsn) return;
   Sentry.init({
-    dsn: process.env.EXPO_PUBLIC_SENTRY_DSN || '',
-    environment: process.env.NODE_ENV || 'production',
-    release: 'plaasboek@1.0.0',
-    tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.2 : 1.0,
-    enableNative: false, // PWA/Expo Go safe mode
-    enableNativeCrashHandling: false,
+    dsn,
+    environment: __DEV__ ? 'development' : 'production',
+    tracesSampleRate: __DEV__ ? 1.0 : 0.1,
+    enableNative: true,
+    enableAutoSessionTracking: true,
+    sessionTrackingIntervalMillis: 30000,
   });
-};
-
-export { Sentry };
+}

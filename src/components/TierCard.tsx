@@ -1,72 +1,60 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { formatZAR } from '../utils/formatZAR';
-import { t } from '../i18n';
+import { Colors, Radius } from '../theme';
 
-export interface TierFeature { label: string; included: boolean; }
-export interface TierCardProps {
-  name: string; price: number; period?: string; features: TierFeature[];
-  isRecommended?: boolean; isSelected?: boolean; onSelect: () => void; testID?: string;
+interface Plan {
+  id: string;
+  name: string;
+  tier_name: string;
+  price_zar: number;
+  description: string;
+  features: string[];
 }
 
-const TierCard: React.FC<TierCardProps> = ({
-  name, price, period = 'month', features, isRecommended, isSelected, onSelect, testID
-}) => {
-  const accessLabel = `${name} plan, ${formatZAR(price)} per ${period}. ${
-    isSelected ? 'Currently selected.' : 'Tap to select.'
-  } ${isRecommended ? 'Recommended plan.' : ''}`;
+interface Props {
+  plan: Plan;
+  isCurrentPlan: boolean;
+  onSelect: (planId: string) => void;
+}
+
+export function TierCard({ plan, isCurrentPlan, onSelect }: Props) {
+  const isPro = plan.tier_name === 'pro';
   return (
-    <TouchableOpacity
-      style={[styles.card, isSelected && styles.selected, isRecommended && styles.recommended]}
-      onPress={onSelect}
-      accessibilityRole="radio"
-      accessibilityLabel={accessLabel}
-      accessibilityState={{ checked: isSelected }}
-      testID={testID ?? `tier-card-${name.toLowerCase()}`}
-    >
-      {isRecommended && (
-        <View style={styles.badge} accessibilityElementsHidden>
-          <Text style={styles.badgeText}>RECOMMENDED</Text>
-        </View>
-      )}
-      <Text style={styles.tierName}>{name}</Text>
-      <Text style={styles.price} accessibilityElementsHidden>
-        {formatZAR(price)}<Text style={styles.period}>/{period}</Text>
+    <View style={[styles.card, isPro && styles.proBorder, isCurrentPlan && styles.activeBorder]}>
+      {isPro && <View style={styles.badge}><Text style={styles.badgeText}>PRO</Text></View>}
+      <Text style={styles.name}>{plan.name}</Text>
+      <Text style={styles.price}>
+        {plan.price_zar === 0 ? 'Gratis' : `R${plan.price_zar}/maand`}
       </Text>
-      <View style={styles.features}>
-        {features.map((f, i) => (
-          <View key={i} style={styles.featureRow} accessibilityElementsHidden>
-            <Text style={[styles.featureIcon, !f.included && styles.excluded]}>{f.included ? '✓' : '✗'}</Text>
-            <Text style={[styles.featureLabel, !f.included && styles.excludedText]}>{f.label}</Text>
-          </View>
-        ))}
-      </View>
-      <TouchableOpacity style={[styles.cta, isSelected && styles.ctaSelected]} onPress={onSelect}
-        accessibilityRole="button" accessibilityLabel={isSelected ? `${name} selected` : `Select ${name} plan`}>
-        <Text style={styles.ctaText}>{isSelected ? '✓ Selected' : t('payment.subscribe')}</Text>
-      </TouchableOpacity>
-    </TouchableOpacity>
+      <Text style={styles.desc}>{plan.description}</Text>
+      {plan.features.map((f, i) => (
+        <Text key={i} style={styles.feature}>✓ {f}</Text>
+      ))}
+      {!isCurrentPlan && (
+        <TouchableOpacity style={[styles.btn, isPro && styles.proBtn]} onPress={() => onSelect(plan.id)}>
+          <Text style={styles.btnText}>{isPro ? 'Opgradeer na Pro' : 'Kies Free'}</Text>
+        </TouchableOpacity>
+      )}
+      {isCurrentPlan && (
+        <View style={styles.currentBadge}><Text style={styles.currentText}>✓ Huidige Plan</Text></View>
+      )}
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  card: { borderRadius: 12, borderWidth: 2, borderColor: '#E0E0E0', padding: 20, marginVertical: 8, backgroundColor: '#FFF' },
-  selected: { borderColor: '#1A1A2E', backgroundColor: '#F0F4FF' },
-  recommended: { borderColor: '#C0392B' },
-  badge: { backgroundColor: '#C0392B', borderRadius: 4, paddingHorizontal: 8, paddingVertical: 2, alignSelf: 'flex-start', marginBottom: 8 },
-  badgeText: { color: '#FFF', fontSize: 10, fontWeight: '700', letterSpacing: 1 },
-  tierName: { fontSize: 18, fontWeight: '700', color: '#1A1A2E', marginBottom: 4 },
-  price: { fontSize: 28, fontWeight: '800', color: '#1A1A2E' },
-  period: { fontSize: 14, fontWeight: '400', color: '#666' },
-  features: { marginVertical: 12 },
-  featureRow: { flexDirection: 'row', alignItems: 'center', marginVertical: 3 },
-  featureIcon: { color: '#27AE60', fontWeight: '700', marginRight: 8, width: 16 },
-  excluded: { color: '#BDC3C7' },
-  featureLabel: { fontSize: 14, color: '#333' },
-  excludedText: { color: '#BDC3C7' },
-  cta: { backgroundColor: '#1A1A2E', borderRadius: 8, padding: 14, alignItems: 'center', marginTop: 8 },
-  ctaSelected: { backgroundColor: '#27AE60' },
-  ctaText: { color: '#FFF', fontWeight: '700', fontSize: 15 },
+  card: { backgroundColor: Colors.surface, borderRadius: Radius.xl, padding: 20, borderWidth: 1, borderColor: Colors.surfaceBorder, marginBottom: 16 },
+  proBorder: { borderColor: Colors.gold },
+  activeBorder: { borderColor: Colors.primary, borderWidth: 2 },
+  badge: { backgroundColor: Colors.gold, alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 3, borderRadius: Radius.full, marginBottom: 8 },
+  badgeText: { color: '#000', fontWeight: '800', fontSize: 11 },
+  name: { color: Colors.textPrimary, fontSize: 20, fontWeight: '700', marginBottom: 4 },
+  price: { color: Colors.primaryLight, fontSize: 24, fontWeight: '800', marginBottom: 8 },
+  desc: { color: Colors.textMuted, fontSize: 13, marginBottom: 12 },
+  feature: { color: Colors.textSecondary, fontSize: 14, marginBottom: 4 },
+  btn: { marginTop: 16, backgroundColor: Colors.surface, borderWidth: 1.5, borderColor: Colors.primary, borderRadius: Radius.md, paddingVertical: 12, alignItems: 'center' },
+  proBtn: { backgroundColor: Colors.primary, borderColor: Colors.primary },
+  btnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  currentBadge: { marginTop: 16, backgroundColor: Colors.primaryDark, borderRadius: Radius.md, paddingVertical: 10, alignItems: 'center' },
+  currentText: { color: Colors.primaryLight, fontWeight: '700' },
 });
-
-export default TierCard;

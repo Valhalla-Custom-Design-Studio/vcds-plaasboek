@@ -1,11 +1,14 @@
-export const formatZAR = (amount: number, inCents = false): string => {
-  const value = inCents ? amount / 100 : amount;
-  return new Intl.NumberFormat('en-ZA', {
-    style: 'currency', currency: 'ZAR',
-    minimumFractionDigits: 2, maximumFractionDigits: 2,
-  }).format(value);
-};
-export const formatZARRange = (min: number, max: number, period = 'month'): string =>
-  `${formatZAR(min)} – ${formatZAR(max)}/${period}`;
-export const formatZARAccessible = (amount: number): string =>
-  `${amount.toFixed(2)} rand`;
+export function formatZAR(amount: number): string {
+  return new Intl.NumberFormat('af-ZA', {
+    style: 'currency',
+    currency: 'ZAR',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+}
+
+export function formatZARShort(amount: number): string {
+  if (amount >= 1_000_000) return `R${(amount / 1_000_000).toFixed(1)}M`;
+  if (amount >= 1_000) return `R${(amount / 1_000).toFixed(1)}K`;
+  return `R${amount.toFixed(2)}`;
+}

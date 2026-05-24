@@ -1,98 +1,121 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import NetInfo from '@react-native-community/netinfo';
+import { api } from './api';
 
-const CACHE_KEY = 'plaasboek_records';
-const CACHE_TS_KEY = 'plaasboek_records_ts';
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const QUEUE_KEY = 'plaasboek_offline_queue';
 
 export interface FarmRecord {
   id: string;
   type: 'income' | 'expense';
-  desc: string;
-  desc_en: string;
   amount: number;
+  category: string;
+  description: string;
   date: string;
-  category?: string;
-  synced?: boolean;
 }
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
+const RECORDS_CACHE_KEY = 'plaasboek_records_cache';
+const RECORDS_CACHE_TS_KEY = 'plaasboek_records_cache_ts';
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+
+interface QueueItem {
+  id: string;
+  type: string;
+  data: Record<string, any>;
+  endpoint: string;
+  method: 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  createdAt: string;
+  retries: number;
+}
+
+const ENDPOINT_MAP: Record<string, { endpoint: string; method: QueueItem['method'] }> = {
+  journal_create: { endpoint: '/journal', method: 'POST' },
+  journal_update: { endpoint: '/journal', method: 'PUT' },
+  rainfall_create: { endpoint: '/rainfall', method: 'POST' },
+  livestock_change: { endpoint: '/camps', method: 'POST' },
+  expense_create: { endpoint: '/expenses', method: 'POST' },
+  worker_log: { endpoint: '/workers/logs', method: 'POST' },
+  vet_visit: { endpoint: '/vet-visits', method: 'POST' },
+};
 
 export const OfflineSyncService = {
-  /**
-   * Returns records: network-first, falls back to cache if offline or fetch fails.
-   * Never references localhost — uses EXPO_PUBLIC_API_URL env var.
-   */
-  async getRecords(token: string): Promise<FarmRecord[]> {
-    const netState = await NetInfo.fetch();
-    const isOnline = netState.isConnected && netState.isInternetReachable;
-
-    if (isOnline) {
-      try {
-        const res = await fetch(`${API_URL}/records`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error(`API ${res.status}`);
-        const data: FarmRecord[] = await res.json();
-        // Cache fresh data
-        await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(data));
-        await AsyncStorage.setItem(CACHE_TS_KEY, Date.now().toString());
-        return data;
-      } catch (err) {
-        console.warn('[OfflineSync] Network fetch failed, using cache:', err);
-      }
-    }
-
-    // Offline or fetch failed — return cached data
-    return this._readCache();
+  async getQueue(): Promise<QueueItem[]> {
+    try {
+      const raw = await AsyncStorage.getItem(QUEUE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
   },
 
-  async _readCache(): Promise<FarmRecord[]> {
+  async saveQueue(queue: QueueItem[]): Promise<void> {
+    await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
+  },
+
+  async enqueue(type: string, data: Record<string, any>): Promise<void> {
+    const map = ENDPOINT_MAP[type];
+    if (!map) { console.warn(`[OfflineSync] Unknown type: ${type}`); return; }
+    const queue = await this.getQueue();
+    const item: QueueItem = {
+      id: `${Date.now()}_${Math.random().toString(36).slice(2)}`,
+      type, data,
+      endpoint: map.endpoint,
+      method: map.method,
+      createdAt: new Date().toISOString(),
+      retries: 0,
+    };
+    queue.push(item);
+    await this.saveQueue(queue);
+  },
+
+  async getPendingCount(): Promise<number> {
+    const queue = await this.getQueue();
+    return queue.length;
+  },
+
+  async flush(): Promise<void> {
+    const queue = await this.getQueue();
+    if (!queue.length) return;
+    const remaining: QueueItem[] = [];
+    for (const item of queue) {
+      try {
+        const endpoint = item.data.id
+          ? `${item.endpoint}/${item.data.id}`
+          : item.endpoint;
+        await api.request({ method: item.method, url: endpoint, data: item.data });
+      } catch (err: any) {
+        item.retries++;
+        if (item.retries < 5) remaining.push(item);
+        else console.warn(`[OfflineSync] Dropped after 5 retries: ${item.type} ${item.id}`);
+      }
+    }
+    await this.saveQueue(remaining);
+  },
+
+  async clear(): Promise<void> {
+    await AsyncStorage.removeItem(QUEUE_KEY);
+  },
+
+  async getRecords(token: string): Promise<FarmRecord[]> {
     try {
-      const raw = await AsyncStorage.getItem(CACHE_KEY);
-      return raw ? JSON.parse(raw) : [];
+      const { default: axios } = await import('axios');
+      const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://plaasboek-api.railway.app/api';
+      const res = await axios.get(`${BASE_URL}/expenses`, { headers: { Authorization: `Bearer ${token}` } });
+      const items: FarmRecord[] = (res.data?.items || []).map((e: any) => ({
+        id: e.id, type: 'expense' as const, amount: parseFloat(e.amount), category: e.category, description: e.description, date: e.date,
+      }));
+      await AsyncStorage.setItem(RECORDS_CACHE_KEY, JSON.stringify(items));
+      await AsyncStorage.setItem(RECORDS_CACHE_TS_KEY, Date.now().toString());
+      return items;
     } catch {
-      return [];
+      const cached = await AsyncStorage.getItem(RECORDS_CACHE_KEY);
+      return cached ? JSON.parse(cached) : [];
     }
   },
 
   async isCacheStale(): Promise<boolean> {
-    const ts = await AsyncStorage.getItem(CACHE_TS_KEY);
-    if (!ts) return true;
-    return Date.now() - parseInt(ts, 10) > CACHE_TTL_MS;
+    try {
+      const ts = await AsyncStorage.getItem(RECORDS_CACHE_TS_KEY);
+      if (!ts) return true;
+      return Date.now() - parseInt(ts) > CACHE_TTL_MS;
+    } catch { return true; }
   },
 
-  async queueOfflineRecord(record: Omit<FarmRecord, 'id' | 'synced'>): Promise<void> {
-    const queue = await this._readQueue();
-    queue.push({ ...record, id: `local_${Date.now()}`, synced: false });
-    await AsyncStorage.setItem('plaasboek_offline_queue', JSON.stringify(queue));
-  },
-
-  async _readQueue(): Promise<FarmRecord[]> {
-    const raw = await AsyncStorage.getItem('plaasboek_offline_queue');
-    return raw ? JSON.parse(raw) : [];
-  },
-
-  async flushQueue(token: string): Promise<void> {
-    const netState = await NetInfo.fetch();
-    if (!netState.isConnected) return;
-
-    const queue = await this._readQueue();
-    if (queue.length === 0) return;
-
-    const failed: FarmRecord[] = [];
-    for (const rec of queue) {
-      try {
-        const res = await fetch(`${API_URL}/records`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify(rec),
-        });
-        if (!res.ok) failed.push(rec);
-      } catch {
-        failed.push(rec);
-      }
-    }
-    await AsyncStorage.setItem('plaasboek_offline_queue', JSON.stringify(failed));
-  },
 };
