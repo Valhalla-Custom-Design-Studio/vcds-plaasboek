@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS users (
   farm_name VARCHAR(100),
   vat_number VARCHAR(20),
   is_active BOOLEAN DEFAULT true,
-  trial_ends_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -31,13 +30,13 @@ CREATE TABLE IF NOT EXISTS plans (
 CREATE TABLE IF NOT EXISTS subscriptions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  plan_id UUID NOT NULL REFERENCES plans(id),
+  tier VARCHAR(20) NOT NULL DEFAULT 'free',
   status VARCHAR(20) DEFAULT 'active',
   started_at TIMESTAMPTZ DEFAULT NOW(),
   next_billing_date TIMESTAMPTZ,
   payfast_subscription_token VARCHAR(255),
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(user_id)
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS payments (
