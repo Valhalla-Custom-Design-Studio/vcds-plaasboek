@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Plaasboek\u2122",
+    "slug": "plaasboek",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vcds.plaasboek"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.vcds.plaasboek"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7f86de5a-8e21-44ff-a040-ef1b2780fde2"
+      }
+    }
+  }
+}
