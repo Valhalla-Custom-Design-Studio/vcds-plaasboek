@@ -27,7 +27,7 @@ jobs:
           java-version: '17'
 
       - name: Install deps
-        run: npm ci --legacy-peer-deps
+        run: npm install --legacy-peer-deps
 
       - name: Expo Prebuild
         run: npx expo prebuild --platform android --clean --no-install
