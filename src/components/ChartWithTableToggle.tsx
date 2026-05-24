@@ -1,72 +1,85 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { formatZAR } from '../utils/formatZAR';
+import { Colors, Radius } from '../theme';
 
-export interface ChartDataPoint { label: string; value: number; date?: string; }
-interface Props { data: ChartDataPoint[]; title: string; isCurrency?: boolean; locale?: 'en' | 'af'; }
+interface DataPoint {
+  label: string;
+  value: number;
+  color?: string;
+}
 
-const ChartWithTableToggle: React.FC<Props> = ({ data, title, isCurrency = false }) => {
-  const [showTable, setShowTable] = useState(false);
-  const maxVal = Math.max(...data.map(d => d.value), 1);
+interface Props {
+  data: DataPoint[];
+  title?: string;
+  unit?: string;
+  formatValue?: (v: number) => string;
+}
+
+export function ChartWithTableToggle({ data, title, unit = '', formatValue }: Props) {
+  const [view, setView] = useState<'chart' | 'table'>('chart');
+  const max = Math.max(...data.map(d => d.value), 1);
+  const fmt = formatValue || ((v: number) => `${v}${unit}`);
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{title}</Text>
-        <TouchableOpacity onPress={() => setShowTable(v => !v)}
-          accessibilityRole="switch"
-          accessibilityLabel={showTable ? 'Switch to chart view' : 'Switch to table view (screen reader friendly)'}
-          accessibilityState={{ checked: showTable }} style={styles.toggle}>
-          <Text style={styles.toggleText}>{showTable ? '📊 Chart' : '📋 Table'}</Text>
-        </TouchableOpacity>
+      {title && <Text style={styles.title}>{title}</Text>}
+      <View style={styles.toggle}>
+        {(['chart', 'table'] as const).map(v => (
+          <TouchableOpacity key={v} style={[styles.toggleBtn, view === v && styles.activeToggle]} onPress={() => setView(v)}>
+            <Text style={[styles.toggleText, view === v && styles.activeToggleText]}>
+              {v === 'chart' ? '📊 Grafiek' : '📋 Tabel'}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
-      {showTable ? (
-        <ScrollView>
-          <View accessibilityRole="table" accessibilityLabel={`${title} data table`}>
-            <View style={styles.tableHeader} accessibilityRole="row">
-              <Text style={[styles.tableCell, styles.tableHeaderText]} accessibilityRole="columnheader">Period</Text>
-              <Text style={[styles.tableCell, styles.tableHeaderText]} accessibilityRole="columnheader">Value</Text>
-            </View>
+
+      {view === 'chart' ? (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View style={styles.chart}>
             {data.map((d, i) => (
-              <View key={i} style={styles.tableRow} accessibilityRole="row">
-                <Text style={styles.tableCell} accessibilityRole="cell">{d.label}</Text>
-                <Text style={styles.tableCell} accessibilityRole="cell">
-                  {isCurrency ? formatZAR(d.value) : d.value.toLocaleString('en-ZA')}
-                </Text>
+              <View key={i} style={styles.barWrapper}>
+                <Text style={styles.barValue}>{fmt(d.value)}</Text>
+                <View style={[styles.bar, { height: Math.max((d.value / max) * 120, 4), backgroundColor: d.color || Colors.primary }]} />
+                <Text style={styles.barLabel}>{d.label}</Text>
               </View>
             ))}
           </View>
         </ScrollView>
       ) : (
-        <View style={styles.chart} accessibilityLabel={`${title} bar chart. Switch to table view for accessible data.`}>
+        <View style={styles.table}>
+          <View style={styles.tableHeader}>
+            <Text style={[styles.tableCell, styles.headerCell]}>Datum</Text>
+            <Text style={[styles.tableCell, styles.headerCell, { textAlign: 'right' }]}>Waarde</Text>
+          </View>
           {data.map((d, i) => (
-            <View key={i} style={styles.barGroup} accessibilityElementsHidden>
-              <View style={styles.barContainer}>
-                <View style={[styles.bar, { height: Math.max((d.value / maxVal) * 120, 4) }]} />
-              </View>
-              <Text style={styles.barLabel} numberOfLines={1}>{d.label}</Text>
+            <View key={i} style={[styles.tableRow, i % 2 === 0 && styles.tableRowAlt]}>
+              <Text style={styles.tableCell}>{d.label}</Text>
+              <Text style={[styles.tableCell, { textAlign: 'right', color: Colors.primaryLight }]}>{fmt(d.value)}</Text>
             </View>
           ))}
         </View>
       )}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: '#FFF', borderRadius: 12, padding: 16, marginVertical: 8 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
-  title: { fontSize: 16, fontWeight: '700', color: '#1A1A2E' },
-  toggle: { backgroundColor: '#F0F4FF', borderRadius: 6, paddingHorizontal: 10, paddingVertical: 6 },
-  toggleText: { fontSize: 12, fontWeight: '600', color: '#1A1A2E' },
-  chart: { flexDirection: 'row', alignItems: 'flex-end', height: 140, justifyContent: 'space-around' },
-  barGroup: { alignItems: 'center', flex: 1 },
-  barContainer: { height: 120, justifyContent: 'flex-end' },
-  bar: { width: 24, backgroundColor: '#1A1A2E', borderRadius: 4 },
-  barLabel: { fontSize: 10, color: '#666', marginTop: 4, textAlign: 'center' },
-  tableHeader: { flexDirection: 'row', backgroundColor: '#F5F5F5', padding: 8 },
-  tableHeaderText: { fontWeight: '700' },
-  tableRow: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#EEE', padding: 8 },
-  tableCell: { flex: 1, fontSize: 13, color: '#333' },
+  container: { marginVertical: 8 },
+  title: { color: Colors.textPrimary, fontSize: 16, fontWeight: '700', marginBottom: 12 },
+  toggle: { flexDirection: 'row', backgroundColor: Colors.surface, borderRadius: Radius.md, padding: 3, marginBottom: 16, alignSelf: 'flex-start' },
+  toggleBtn: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: Radius.sm },
+  activeToggle: { backgroundColor: Colors.primary },
+  toggleText: { color: Colors.textMuted, fontSize: 13, fontWeight: '600' },
+  activeToggleText: { color: '#fff' },
+  chart: { flexDirection: 'row', alignItems: 'flex-end', gap: 8, paddingBottom: 8, minHeight: 160 },
+  barWrapper: { alignItems: 'center', minWidth: 40 },
+  barValue: { color: Colors.textMuted, fontSize: 10, marginBottom: 4 },
+  bar: { width: 28, borderRadius: 4, minHeight: 4 },
+  barLabel: { color: Colors.textMuted, fontSize: 10, marginTop: 4, textAlign: 'center' },
+  table: { borderRadius: Radius.md, overflow: 'hidden', borderWidth: 1, borderColor: Colors.surfaceBorder },
+  tableHeader: { flexDirection: 'row', backgroundColor: Colors.surfaceElevated, paddingVertical: 8, paddingHorizontal: 12 },
+  tableRow: { flexDirection: 'row', paddingVertical: 8, paddingHorizontal: 12 },
+  tableRowAlt: { backgroundColor: Colors.surface },
+  tableCell: { flex: 1, color: Colors.textPrimary, fontSize: 13 },
+  headerCell: { color: Colors.textSecondary, fontWeight: '700', fontSize: 12 },
 });
-
-export default ChartWithTableToggle;

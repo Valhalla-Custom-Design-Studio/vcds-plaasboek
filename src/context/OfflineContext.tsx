@@ -1,68 +1,60 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import NetInfo from '@react-native-community/netinfo';
-import { api } from '../services/api';
-
-interface OfflineAction { type: string; data: any; id: string; timestamp: number; }
+import { OfflineSyncService } from '../services/OfflineSyncService';
 
 interface OfflineContextType {
   isOnline: boolean;
   isSyncing: boolean;
   pendingCount: number;
-  queueAction: (type: string, data: any) => Promise<void>;
-  flushQueue: () => Promise<void>;
+  enqueue: (type: string, data: Record<string, any>) => Promise<void>;
+  flush: () => Promise<void>;
+  flushQueue: () => Promise<void>; // alias for flush
 }
 
 const OfflineContext = createContext<OfflineContextType>({} as OfflineContextType);
-const QUEUE_KEY = 'offline_queue';
 
 export function OfflineProvider({ children }: { children: React.ReactNode }) {
   const [isOnline, setIsOnline] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
-  const syncRef = useRef(false);
+
+  const refreshCount = useCallback(async () => {
+    const n = await OfflineSyncService.getPendingCount();
+    setPendingCount(n);
+  }, []);
 
   useEffect(() => {
-    loadQueueCount();
-    const unsub = NetInfo.addEventListener(state => {
-      const online = state.isConnected === true && state.isInternetReachable !== false;
+    refreshCount();
+    const unsub = NetInfo.addEventListener(async (state) => {
+      const online = !!(state.isConnected && state.isInternetReachable);
       setIsOnline(online);
-      if (online && !syncRef.current) flushQueue();
+      if (online) {
+        const count = await OfflineSyncService.getPendingCount();
+        if (count > 0) {
+          setIsSyncing(true);
+          await OfflineSyncService.flush();
+          setIsSyncing(false);
+          await refreshCount();
+        }
+      }
     });
     return () => unsub();
   }, []);
 
-  const loadQueueCount = async () => {
-    const raw = await AsyncStorage.getItem(QUEUE_KEY);
-    const queue: OfflineAction[] = raw ? JSON.parse(raw) : [];
-    setPendingCount(queue.length);
-  };
+  const enqueue = useCallback(async (type: string, data: Record<string, any>) => {
+    await OfflineSyncService.enqueue(type, data);
+    await refreshCount();
+  }, []);
 
-  const queueAction = async (type: string, data: any) => {
-    const raw = await AsyncStorage.getItem(QUEUE_KEY);
-    const queue: OfflineAction[] = raw ? JSON.parse(raw) : [];
-    queue.push({ type, data, id: Math.random().toString(36), timestamp: Date.now() });
-    await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
-    setPendingCount(queue.length);
-  };
-
-  const flushQueue = async () => {
-    if (syncRef.current) return;
-    const raw = await AsyncStorage.getItem(QUEUE_KEY);
-    const queue: OfflineAction[] = raw ? JSON.parse(raw) : [];
-    if (queue.length === 0) return;
-    syncRef.current = true;
+  const flush = useCallback(async () => {
     setIsSyncing(true);
-    try {
-      await api.post('/sync', { actions: queue });
-      await AsyncStorage.removeItem(QUEUE_KEY);
-      setPendingCount(0);
-    } catch (e) { console.warn('[Offline] Sync failed:', e); }
-    finally { syncRef.current = false; setIsSyncing(false); }
-  };
+    await OfflineSyncService.flush();
+    setIsSyncing(false);
+    await refreshCount();
+  }, []);
 
   return (
-    <OfflineContext.Provider value={{ isOnline, isSyncing, pendingCount, queueAction, flushQueue }}>
+    <OfflineContext.Provider value={{ isOnline, isSyncing, pendingCount, enqueue, flush, flushQueue: flush }}>
       {children}
     </OfflineContext.Provider>
   );

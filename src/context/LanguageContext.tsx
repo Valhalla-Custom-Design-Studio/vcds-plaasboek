@@ -1,41 +1,54 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { i18n, setLocale } from '../i18n';
+import en from '../i18n/en.json';
+import af from '../i18n/af.json';
 
-interface LanguageContextType {
-  language: 'af' | 'en';
-  toggleLanguage: () => void;
-  t: (key: string, opts?: object) => string;
+type Lang = 'en' | 'af';
+const translations: Record<Lang, Record<string, any>> = { en, af };
+
+function getNestedValue(obj: Record<string, any>, key: string): string {
+  return key.split('.').reduce((acc, k) => (acc && acc[k] !== undefined ? acc[k] : key), obj) as string;
 }
 
-const LanguageContext = createContext<LanguageContextType>({
-  language: 'af',
-  toggleLanguage: () => {},
-  t: (key) => key,
-});
+interface LanguageContextType {
+  lang: Lang;
+  language: Lang; // alias for lang
+  setLang: (lang: Lang) => void;
+  setLanguage: (lang: Lang) => void; // alias for setLang
+  toggleLanguage: () => void;
+  t: (key: string, vars?: Record<string, string | number>) => string;
+}
+
+const LanguageContext = createContext<LanguageContextType>({} as LanguageContextType);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<'af' | 'en'>('af');
+  const [lang, setLangState] = useState<Lang>('af');
 
   useEffect(() => {
-    AsyncStorage.getItem('language').then(lang => {
-      if (lang === 'af' || lang === 'en') {
-        setLanguage(lang);
-        i18n.locale = lang;
-      }
+    AsyncStorage.getItem('app_language').then(saved => {
+      if (saved === 'en' || saved === 'af') setLangState(saved);
     });
   }, []);
 
-  const toggleLanguage = async () => {
-    const next = language === 'af' ? 'en' : 'af';
-    await setLocale(next);
-    setLanguage(next);
+  const setLang = async (newLang: Lang) => {
+    setLangState(newLang);
+    await AsyncStorage.setItem('app_language', newLang);
   };
 
-  const t = (key: string, opts?: object) => i18n.t(key, opts);
+  const toggleLanguage = () => setLang(lang === 'af' ? 'en' : 'af');
+
+  const t = (key: string, vars?: Record<string, string | number>): string => {
+    let value = getNestedValue(translations[lang], key);
+    if (vars) {
+      Object.entries(vars).forEach(([k, v]) => {
+        value = value.replace(new RegExp(`{{${k}}}`, 'g'), String(v));
+      });
+    }
+    return value;
+  };
 
   return (
-    <LanguageContext.Provider value={{ language, toggleLanguage, t }}>
+    <LanguageContext.Provider value={{ lang, language: lang, setLang, setLanguage: setLang, toggleLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );

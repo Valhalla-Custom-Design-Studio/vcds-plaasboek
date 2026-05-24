@@ -1,41 +1,73 @@
 export const Colors = {
-  primary: '#15803D',
-  primaryDark: '#166534',
-  accent: '#92400E',
-  accentDark: '#78350F',
-  error: '#DC2626',
-  warning: '#D97706',
-  success: '#15803D',
+  // Backgrounds
   background: '#0C1A0F',
-  surface: 'rgba(21, 128, 61, 0.08)',
-  surfaceBorder: 'rgba(21, 128, 61, 0.15)',
-  textPrimary: '#E8F0E8',
-  textSecondary: '#9CA38A',
-  textMuted: '#687260',
-  tabBar: 'rgba(12, 26, 15, 0.95)',
-  inputBg: 'rgba(21, 128, 61, 0.06)',
-  inputBorder: 'rgba(21, 128, 61, 0.2)',
+  surface: '#132218',
+  surfaceElevated: '#1A2E1F',
+  surfaceBorder: '#2A3F2F',
+  tabBar: '#0F1F13',
+
+  // Brand
+  primary: '#15803D',
+  primaryLight: '#22C55E',
+  primaryDark: '#166534',
+
+  // Text
+  textPrimary: '#F0FDF4',
+  textSecondary: '#86EFAC',
+  textMuted: '#4ADE80',
+  textDisabled: '#374151',
+
+  // Status
+  success: '#22C55E',
+  warning: '#F59E0B',
+  error: '#EF4444',
+  info: '#3B82F6',
+
   // SOS types
   attack: '#DC2626',
-  medical: '#3B82F6',
-  fire: '#F97316',
-  general: '#EAB308',
+  medical: '#2563EB',
+  fire: '#EA580C',
+  general: '#7C3AED',
+
   // Expense categories
-  fuel: '#EF4444', feed: '#F59E0B', vet: '#3B82F6', fencing: '#8B5CF6',
-  labour: '#10B981', equipment: '#EC4899', other: '#687280',
+  fuel: '#F97316',
+  feed: '#84CC16',
+  vet: '#06B6D4',
+  fencing: '#8B5CF6',
+  labour: '#EC4899',
+  equipment: '#F59E0B',
+  other: '#6B7280',
+
+  // Misc
+  gold: '#F59E0B',
+  overlay: 'rgba(0,0,0,0.6)',
+  inputBg: '#1A2E1F',
+  inputBorder: '#2A3F2F',
+  inputFocus: '#15803D',
+};
+
+export const Radius = {
+  sm: 6,
+  md: 10,
+  lg: 14,
+  xl: 20,
+  full: 9999,
 };
 
 export const Spacing = {
-  xs: 4, sm: 8, md: 16, lg: 24, xl: 32, xxl: 48,
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  xxl: 48,
 };
 
 export const Typography = {
-  h1: { fontSize: 32, fontWeight: 'bold' as const, fontFamily: 'Georgia' },
-  h2: { fontSize: 24, fontWeight: '600' as const, fontFamily: 'Georgia' },
-  h3: { fontSize: 20, fontWeight: '600' as const },
-  body: { fontSize: 16, lineHeight: 24 },
-  small: { fontSize: 14, lineHeight: 20 },
-  caption: { fontSize: 12, lineHeight: 16 },
+  h1: { fontSize: 28, fontWeight: '700' as const, color: Colors.textPrimary },
+  h2: { fontSize: 22, fontWeight: '700' as const, color: Colors.textPrimary },
+  h3: { fontSize: 18, fontWeight: '600' as const, color: Colors.textPrimary },
+  body: { fontSize: 15, fontWeight: '400' as const, color: Colors.textPrimary },
+  caption: { fontSize: 12, fontWeight: '400' as const, color: Colors.textMuted },
+  label: { fontSize: 13, fontWeight: '600' as const, color: Colors.textSecondary },
 };
-
-export const Radius = { sm: 8, md: 12, lg: 16, xl: 24, full: 9999 };

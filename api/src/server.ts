@@ -5,12 +5,31 @@ import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 dotenv.config();
 import * as Sentry from '@sentry/node';
+import fs from 'fs';
+import path from 'path';
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV || 'production',
   tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
 });
+
+
+// Auto-run schema on startup
+async function runMigrations() {
+  try {
+    const { pool: dbPool } = require('./db/pool');
+    const schemaPath = path.join(__dirname, 'db', 'schema.sql');
+    if (fs.existsSync(schemaPath)) {
+      const schema = fs.readFileSync(schemaPath, 'utf8');
+      await dbPool.query(schema);
+      console.log('[Plaasboek API] ✅ Schema applied');
+    }
+  } catch (err: any) {
+    console.warn('[Plaasboek API] Migration warning:', err.message);
+  }
+}
+runMigrations();
 
 import authRouter from './routes/auth';
 import journalRouter from './routes/journal';
@@ -26,6 +45,7 @@ import pushTokensRouter from './routes/pushTokens';
 import uploadRouter from './routes/upload';
 import syncRouter from './routes/sync';
 import paymentsRouter from './routes/payments';
+import subscriptionRouter from './routes/subscriptions';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
 
@@ -60,6 +80,7 @@ app.use('/api/push-tokens', pushTokensRouter);
 app.use('/api/upload', uploadRouter);
 app.use('/api/sync', syncRouter);
 app.use('/api/payments', paymentsRouter);
+app.use('/api/subscriptions', subscriptionRouter);
 
 app.use(Sentry.Handlers.errorHandler());
 app.use(errorHandler);

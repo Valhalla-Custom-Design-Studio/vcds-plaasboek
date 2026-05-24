@@ -240,3 +240,47 @@ CREATE TABLE IF NOT EXISTS push_tokens (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_push_tokens_user_id ON push_tokens(user_id);
+
+-- ─── PLANS ────────────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS plans (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name VARCHAR(100) NOT NULL,
+  tier_name VARCHAR(20) NOT NULL CHECK (tier_name IN ('free','pro')),
+  price_zar DECIMAL(10,2) NOT NULL DEFAULT 0,
+  description TEXT,
+  features JSONB DEFAULT '[]',
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+INSERT INTO plans (name, tier_name, price_zar, description, features) VALUES
+  ('Plaasboek Free', 'free', 0.00, 'Basic farm journal and records', '["Journal","Rainfall","Livestock","Expenses","Workers","SOS (5 contacts)"]'),
+  ('Plaasboek Pro', 'pro', 99.00, 'Full farm management suite', '["Everything in Free","Unlimited SOS contacts","Dead Man Switch","Photo uploads","Vet records","Offline sync","Priority support"]')
+ON CONFLICT DO NOTHING;
+
+-- ─── PAYMENTS ─────────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS payments (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  plan_id UUID REFERENCES plans(id) ON DELETE SET NULL,
+  amount_zar DECIMAL(10,2) NOT NULL,
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending','completed','failed','refunded')),
+  payfast_payment_id VARCHAR(255),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_payments_payfast_id ON payments(payfast_payment_id) WHERE payfast_payment_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_payments_user_id ON payments(user_id);
+
+-- ─── SUBSCRIPTIONS ────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS subscriptions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  plan_id UUID NOT NULL REFERENCES plans(id) ON DELETE RESTRICT,
+  status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active','cancelled','expired','paused')),
+  started_at TIMESTAMPTZ DEFAULT NOW(),
+  next_billing_date TIMESTAMPTZ,
+  cancelled_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id ON subscriptions(user_id);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status);
