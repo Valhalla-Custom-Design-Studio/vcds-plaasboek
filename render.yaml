@@ -1,23 +1,8 @@
 services:
   - type: web
-    name: Plaasboek-api
-    runtime: docker
-    dockerfilePath: ./api/Dockerfile
-    dockerContext: ./api
-    branch: main
+    name: vcds-plaasboek
+    env: docker
+    rootDir: api
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
     autoDeploy: true
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: PORT
-        value: 3007
-      - key: DATABASE_URL
-        sync: false
-      - key: JWT_SECRET
-        sync: false
-      - key: PAYFAST_MERCHANT_ID
-        sync: false
-      - key: PAYFAST_MERCHANT_KEY
-        sync: false
-      - key: PAYFAST_PASSPHRASE
-        sync: false
