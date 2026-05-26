@@ -15,7 +15,7 @@ export default function RainfallCreateScreen() {
 
   const handleSave = async () => {
     if (!amount || isNaN(Number(amount)) || Number(amount) < 0) {
-      Alert.alert(t('common.error'), 'Voer 'n geldige hoeveelheid in');
+      Alert.alert(t('common.error'), "Voer 'n geldige hoeveelheid in");
       return;
     }
     setSaving(true);

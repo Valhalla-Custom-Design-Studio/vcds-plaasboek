@@ -81,7 +81,7 @@ export default function SOSTab() {
         Alert.alert('Gedeaktiveer', 'Dooie Man Skakelaar is gedeaktiveer');
       } else {
         await api.post('/api/sos/dms/arm', { interval_minutes: 60 });
-        Alert.alert('Geaktiveer', 'Dooie Man Skakelaar is geaktiveer. Stuur elke 60 minute 'n hartklop.');
+        Alert.alert('Geaktiveer', "Dooie Man Skakelaar is geaktiveer. Stuur elke 60 minute 'n hartklop.");
       }
       loadData();
     } catch { Alert.alert('Fout', 'DMS aksie misluk'); }
