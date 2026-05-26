@@ -83,6 +83,14 @@
           "photosPermission": "Plaasboek accesses your photos to attach images to journal entries.",
           "cameraPermission": "Plaasboek uses your camera to add photos to journal entries."
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "kotlinVersion": "1.9.25"
+          }
+        }
       ]
     ],
     "scheme": "plaasboek",
