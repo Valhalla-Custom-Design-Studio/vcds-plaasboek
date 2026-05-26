@@ -1,8 +1,0 @@
-services:
-  - type: web
-    name: vcds-plaasboek
-    env: docker
-    rootDir: api
-    dockerfilePath: ./Dockerfile
-    healthCheckPath: /health
-    autoDeploy: true
