@@ -1,10 +1,9 @@
 services:
   - type: web
     name: Plaasboek-api
-    env: node
-    rootDir: api
-    buildCommand: npm install && npm run build
-    startCommand: npm start
+    runtime: docker
+    dockerfilePath: ./api/Dockerfile
+    dockerContext: ./api
     branch: main
     autoDeploy: true
     healthCheckPath: /health
