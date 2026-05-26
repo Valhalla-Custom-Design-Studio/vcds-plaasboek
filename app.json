@@ -88,7 +88,7 @@
     "scheme": "plaasboek",
     "extra": {
       "eas": {
-        "projectId": "plaasboek-vcds"
+        "projectId": "REPLACE_WITH_EAS_PROJECT_ID_PLAASBOEK"
       }
     },
     "experiments": {
@@ -101,6 +101,10 @@
       "url": "https://u.expo.dev/plaasboek-vcds",
       "enabled": true,
       "fallbackToCacheTimeout": 0
+    },
+    "owner": "valhalla-custom-design-studios",
+    "eas": {
+      "projectId": "REPLACE_WITH_EAS_PROJECT_ID_PLAASBOEK"
     }
   }
 }
