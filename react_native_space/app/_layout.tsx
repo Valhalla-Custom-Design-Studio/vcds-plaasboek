@@ -3,10 +3,15 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { AuthContext, useAuthProvider } from '../src/hooks/useAuth';
 import * as Notifications from 'expo-notifications';
+import { posthog } from '../../src/lib/posthog';
+import { initSentry } from '../src/lib/sentry';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({ shouldShowAlert: true, shouldPlaySound: true, shouldSetBadge: true }),
 });
+
+initSentry();
+posthog.capture('app_opened');
 
 export default function RootLayout() {
   const auth = useAuthProvider();
