@@ -95,9 +95,8 @@ export const OfflineSyncService = {
 
   async getRecords(token: string): Promise<FarmRecord[]> {
     try {
-      const { default: axios } = await import('axios');
-      const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://plaasboek-api.railway.app/api';
-      const res = await axios.get(`${BASE_URL}/expenses`, { headers: { Authorization: `Bearer ${token}` } });
+      // Use the shared api instance — respects EXPO_PUBLIC_API_URL, never hardcodes a host
+      const res = await api.get('/expenses', { headers: { Authorization: `Bearer ${token}` } });
       const items: FarmRecord[] = (res.data?.items || []).map((e: any) => ({
         id: e.id, type: 'expense' as const, amount: parseFloat(e.amount), category: e.category, description: e.description, date: e.date,
       }));
