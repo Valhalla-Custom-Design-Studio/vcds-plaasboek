@@ -23,8 +23,7 @@ export async function sendSMS(to: string | string[], body: string): Promise<bool
       headers: { 'Content-Type': 'application/json' },
       timeout: 15000,
     });
-    console.log(`SMS sent to ${recipients.length} recipient(s):`, res.status);
-    return true;
+return true;
   } catch (err: any) {
     console.error('BulkSMS error:', err?.response?.data || err.message);
     return false;

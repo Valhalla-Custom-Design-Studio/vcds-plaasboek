@@ -24,9 +24,9 @@ paymentsRouter.post('/initiate', authenticate, requireApproved, async (req: Auth
     const params: Record<string, string> = {
       merchant_id: process.env.PAYFAST_MERCHANT_ID!,
       merchant_key: process.env.PAYFAST_MERCHANT_KEY!,
-      return_url: `${process.env.APP_URL || 'https://vcds-plaasboek.up.railway.app'}/payment/success`,
-      cancel_url: `${process.env.APP_URL || 'https://vcds-plaasboek.up.railway.app'}/payment/cancel`,
-      notify_url: `${process.env.API_URL || 'https://vcds-plaasboek.up.railway.app'}/api/payments/notify`,
+      return_url: `${process.env.APP_URL || process.env.EXPO_PUBLIC_API_URL}/payment/success`,
+      cancel_url: `${process.env.APP_URL || process.env.EXPO_PUBLIC_API_URL}/payment/cancel`,
+      notify_url: `${process.env.API_URL || process.env.EXPO_PUBLIC_API_URL}/api/payments/notify`,
       name_first: req.user!.email.split('@')[0],
       email_address: req.user!.email,
       m_payment_id,

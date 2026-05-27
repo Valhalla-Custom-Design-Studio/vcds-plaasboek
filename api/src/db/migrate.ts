@@ -282,8 +282,7 @@ async function migrate() {
     `);
 
     await client.query('COMMIT');
-    console.log('Migration complete — all 18 tables created');
-  } catch (err) {
+} catch (err) {
     await client.query('ROLLBACK');
     console.error('Migration failed:', err);
     process.exit(1);

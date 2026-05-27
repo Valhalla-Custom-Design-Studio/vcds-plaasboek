@@ -53,7 +53,7 @@
       "eas": {
         "projectId": "43a8ccbf-0000-0000-0000-000000000000"
       },
-      "apiUrl": "https://vcds-plaasboek.up.railway.app"
+      "apiUrl": process.env.EXPO_PUBLIC_API_URL
     },
     "owner": "valhalla-custom-design-studios-org"
   }

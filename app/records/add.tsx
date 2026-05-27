@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Switch
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 
-const API = process.env.EXPO_PUBLIC_API_URL || 'https://vcds-plaasboek.up.railway.app';
+const API = process.env.EXPO_PUBLIC_API_URL || process.env.EXPO_PUBLIC_API_URL;
 const INCOME_CATS = ['Livestock Sales','Crop Sales','Wool/Mohair','Dairy','Rental Income','Government Grant','Other Income'];
 const EXPENSE_CATS = ['Feed & Supplements','Veterinary','Fuel','Labour','Equipment','Repairs','Seeds & Fertilizer','Insurance','Rates & Taxes','Electricity','Water','Other Expense'];
 

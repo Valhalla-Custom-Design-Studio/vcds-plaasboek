@@ -145,8 +145,7 @@ router.post('/alert-webhook', async (req: Request, res: Response) => {
       return;
     }
     const { event, plate_number, threat_level, camera_id, timestamp } = req.body;
-    console.log(`[Watchlist Alert] ${event}: ${plate_number} | Threat: ${threat_level} | Camera: ${camera_id} | ${timestamp}`);
-    // TODO: Push notification to app users via Expo push — wire to pushTokensRouter
+// TODO: Push notification to app users via Expo push — wire to pushTokensRouter
     res.json({ success: true, received: true });
   } catch (e: any) { res.status(500).json({ error: e.message }); }
 });

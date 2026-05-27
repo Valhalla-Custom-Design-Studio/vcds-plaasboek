@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, ActivityI
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 
-const API = process.env.EXPO_PUBLIC_API_URL || 'https://vcds-plaasboek.up.railway.app';
+const API = process.env.EXPO_PUBLIC_API_URL || process.env.EXPO_PUBLIC_API_URL;
 const T = {
   en: { title:'Reports & Analytics', summary:'Annual Summary', income:'Total Income', expenses:'Total Expenses', profit:'Net Profit', vat:'Total VAT', score:'AgriFinance Score', grade:'Grade', recommendation:'Recommendation', monthly:'Monthly Breakdown', sars:'SARS Tax Summary', export:'Export PDF Report', loading:'Loading...' },
   af: { title:'Verslae & Analise', summary:'Jaarlikse Opsomming', income:'Totale Inkomste', expenses:'Totale Uitgawes', profit:'Netto Wins', vat:'Totale BTW', score:'AgriFinansie Telling', grade:'Graad', recommendation:'Aanbeveling', monthly:'Maandelikse Uiteensetting', sars:'SARS Belasting Opsomming', export:'Voer PDF Verslag Uit', loading:'Laai...' },
