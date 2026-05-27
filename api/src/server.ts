@@ -27,6 +27,7 @@ import syncRouter from './routes/sync';
 import adminRouter from './routes/admin';
 import recordsRouter from './routes/records';
 import healthRouter from './routes/health';
+import watchlistRouter from './routes/watchlist';
 
 // Sentry
 if (process.env.SENTRY_DSN) {
@@ -90,6 +91,8 @@ setInterval(async () => {
 }, 5 * 60 * 1000);
 
 // Error handler
+app.use('/api/watchlist', watchlistRouter);
+
 app.use(errorHandler);
 
 app.listen(PORT, () => {
