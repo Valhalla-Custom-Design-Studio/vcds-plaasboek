@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Plaasboek",
+    "name": "Plaasboek\u2122",
     "slug": "plaasboek",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,7 +9,7 @@
     "splash": {
       "image": "./src/assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0C1A0F"
+      "backgroundColor": "#5C1A00"
     },
     "assetBundlePatterns": [
       "**/*"
