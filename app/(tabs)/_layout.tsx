@@ -16,6 +16,8 @@ export default function TabsLayout() {
     { name: 'expenses', emoji: '💰' },
     { name: 'workers', emoji: '👷' },
     { name: 'emergencies', emoji: '🆘' },
+    { name: 'watchlist', emoji: '👁️' },
+    { name: 'community', emoji: '🌾' },
   ];
 
   return (
