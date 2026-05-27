@@ -66,6 +66,7 @@ function InnerLayout() {
             headerTintColor: '#fff',
           }}
         />
+        <Stack.Screen name="sync-status" />
         <Stack.Screen name="+not-found" />
       </Stack>
       {showSos && <FloatingSosButton />}
