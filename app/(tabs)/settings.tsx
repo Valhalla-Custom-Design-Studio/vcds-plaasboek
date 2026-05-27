@@ -76,9 +76,9 @@ export default function Settings() {
           <Text style={s.rowLabel}>{t.tier}</Text>
           <Text style={[s.badge, tier === 'premium' ? s.badgePremium : s.badgeFree]}>{tier === 'premium' ? t.premium : t.free}</Text>
         </View>
-        {tier !== 'premium' && (
-          <TouchableOpacity style={s.upgradeBtn}><Text style={s.upgradeTxt}>{t.upgrade}</Text></TouchableOpacity>
-        )}
+        <TouchableOpacity style={s.upgradeBtn} onPress={() => router.push('/subscription')}>
+          <Text style={s.upgradeTxt}>{tier !== 'free' ? t.subscription : t.upgrade}</Text>
+        </TouchableOpacity>
       </View>
 
       <Text style={s.sectionLabel}>{t.account}</Text>
