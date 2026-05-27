@@ -22,3 +22,7 @@ services:
         sync: false
       - key: PAYFAST_PASSPHRASE
         sync: false
+      - key: WATCHLIST_ENGINE_URL
+        sync: false
+      - key: INTERNAL_TOKEN
+        sync: false
