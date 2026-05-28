@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Modal, Alert, ActivityIndicator, RefreshControl } from 'react-native';
 import { Colors } from '../../../src/theme';
-import { useAuthStore } from '../../../src/store/auth';
+import { useAuth } from '../../../src/context/AuthContext';
 
 type WatchlistEntry = {
   id: string; type: 'vehicle' | 'person' | 'farm';
@@ -11,7 +11,7 @@ type WatchlistEntry = {
 };
 
 export default function WatchlistScreen() {
-  const { token } = useAuthStore();
+  const { token } = useAuth();
   const [entries, setEntries] = useState<WatchlistEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);

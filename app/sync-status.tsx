@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { Colors } from '../src/theme';
-import { useAuthStore } from '../src/store/auth';
+import { useAuth } from '../src/context/AuthContext';
 
 type SyncItem = {
   id: string; table: string; action: 'insert' | 'update' | 'delete';
@@ -11,7 +11,7 @@ type SyncItem = {
 type SyncStats = { pending: number; synced: number; failed: number; lastSync: string | null };
 
 export default function SyncStatusScreen() {
-  const { token } = useAuthStore();
+  const { token } = useAuth();
   const [stats, setStats] = useState<SyncStats | null>(null);
   const [items, setItems] = useState<SyncItem[]>([]);
   const [loading, setLoading] = useState(true);
