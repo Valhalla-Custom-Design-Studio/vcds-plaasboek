@@ -1,14 +1,26 @@
 import admin from 'firebase-admin';
 
-// Initialize Firebase Admin once
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
-  });
+// Lazy initialisation — avoids crashing at startup if Firebase env vars are absent.
+// Push notifications will be silently skipped until vars are set in Render.
+function getMessaging(): admin.messaging.Messaging | null {
+  const projectId   = process.env.FIREBASE_PROJECT_ID;
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+  const privateKey  = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+
+  if (!projectId || !clientEmail || !privateKey) {
+    if (!admin.apps.length) {
+      console.warn('[FCM] Firebase env vars missing — push notifications disabled.');
+    }
+    return null;
+  }
+
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.cert({ projectId, clientEmail, privateKey }),
+    });
+  }
+
+  return admin.messaging();
 }
 
 export async function sendPushNotification(
@@ -18,9 +30,9 @@ export async function sendPushNotification(
   body: string,
   data?: Record<string, string>
 ): Promise<void> {
-  const messaging = admin.messaging();
+  const messaging = getMessaging();
   const token = fcmToken || expoPushToken;
-  if (!token) return;
+  if (!messaging || !token) return;
 
   try {
     await messaging.send({
