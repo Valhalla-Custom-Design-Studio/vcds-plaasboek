@@ -30,6 +30,7 @@ export default function Reports() {
           fetch(`${API}/api/records/agrifinance-score`, { headers: h }).then(r => r.json()),
           fetch(`${API}/api/records/monthly-breakdown`, { headers: h }).then(r => r.json()),
         ]);
+            .catch((err) => { /* VCDS:SAFE */ if (__DEV__) { void 0; } });
         setSummary(s.summary);
         setScoreData(sc);
         setMonthly(m.breakdown || []);

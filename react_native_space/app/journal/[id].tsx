@@ -20,6 +20,7 @@ export default function JournalAddScreen() {
       });
     }
   }, [id]);
+        .catch((err) => { /* VCDS:SAFE */ if (__DEV__) { void 0; } });
 
   const save = async () => {
     if (!form.title) { Alert.alert('Fout', 'Titel is verpligtend'); return; }

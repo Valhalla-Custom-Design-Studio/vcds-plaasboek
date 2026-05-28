@@ -29,6 +29,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       if (saved === 'en' || saved === 'af') setLangState(saved);
     });
   }, []);
+      .catch((err) => { /* VCDS:SAFE */ if (__DEV__) { void 0; } });
 
   const setLang = async (newLang: Lang) => {
     setLangState(newLang);

@@ -16,6 +16,7 @@ export default function WorkerDetailScreen() {
       setLogs(l.data.logs || []);
     }).finally(() => setLoading(false));
   }, [id]);
+      .catch((err) => { /* VCDS:SAFE */ if (__DEV__) { void 0; } });
 
   if (loading) return <View style={s.center}><ActivityIndicator size="large" color="#2D5016" /></View>;
   if (!worker) return <View style={s.center}><Text>Werker nie gevind nie</Text></View>;

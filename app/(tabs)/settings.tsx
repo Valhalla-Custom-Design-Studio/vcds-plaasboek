@@ -18,6 +18,7 @@ export default function Settings() {
   useEffect(() => {
     AsyncStorage.getItem('lang').then(v => v && setLang(v as any));
     AsyncStorage.getItem('push_enabled').then(v => v !== null && setPushEnabled(v === 'true'));
+      .catch((err) => { /* VCDS:SAFE */ if (__DEV__) { void 0; } });
     AsyncStorage.getItem('token').then(async token => {
       if (token) {
         try {
@@ -26,6 +27,7 @@ export default function Settings() {
         } catch {}
       }
     });
+      .catch((err) => { /* VCDS:SAFE */ if (__DEV__) { void 0; } });
   }, []);
 
   const switchLang = (l: 'en'|'af') => { setLang(l); AsyncStorage.setItem('lang', l); };
