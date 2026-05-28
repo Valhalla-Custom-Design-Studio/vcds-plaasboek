@@ -146,7 +146,27 @@ router.post('/alert-webhook', async (req: Request, res: Response) => {
     }
     const { event, plate_number, threat_level, camera_id, timestamp } = req.body;
     console.log(`[Watchlist Alert] ${event}: ${plate_number} | Threat: ${threat_level} | Camera: ${camera_id} | ${timestamp}`);
-    // TODO: Push notification to app users via Expo push — wire to pushTokensRouter
+    // Wire Expo push notifications to registered app users
+    try {
+      const tokenRows = await pool.query('SELECT push_token FROM push_tokens WHERE push_token IS NOT NULL');
+      const { Expo } = require('expo-server-sdk');
+      const expo = new Expo();
+      const messages = tokenRows.rows
+        .filter((r: any) => Expo.isExpoPushToken(r.push_token))
+        .map((r: any) => ({
+          to: r.push_token,
+          sound: 'default',
+          title: `🚨 Waglyswaarskuwing: ${event}`,
+          body: `Nommerbord ${plate_number} | Dreigingsvlak: ${threat_level}`,
+          data: { event, plate_number, threat_level, camera_id, timestamp },
+        }));
+      if (messages.length > 0) {
+        const chunks = expo.chunkPushNotifications(messages);
+        for (const chunk of chunks) {
+          await expo.sendPushNotificationsAsync(chunk).catch((e: any) => console.error('[Expo push error]', e.message));
+        }
+      }
+    } catch (pushErr: any) { console.error('[Push notification error]', pushErr.message); }
     res.json({ success: true, received: true });
   } catch (e: any) { res.status(500).json({ error: e.message }); }
 });

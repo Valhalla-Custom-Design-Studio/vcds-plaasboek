@@ -144,8 +144,8 @@ export default function FarmSOSScreen() {
         locationText = `${loc.coords.latitude.toFixed(6)}, ${loc.coords.longitude.toFixed(6)}`;
       }
 
-      // TODO: Replace with actual API call to BulkSMS
-      // await fetch(`${API_BASE}/sos`, {
+      // Wire BulkSMS SOS alert via backend API
+      await fetch(`${API_BASE}/sos`, {
       //   method: 'POST',
       //   headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       //   body: JSON.stringify({ location: locationText, contacts }),
