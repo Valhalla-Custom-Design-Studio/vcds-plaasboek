@@ -28,6 +28,7 @@ import adminRouter from './routes/admin';
 import recordsRouter from './routes/records';
 import healthRouter from './routes/health';
 import watchlistRouter from './routes/watchlist';
+import geofenceRouter from './routes/geofence';
 
 // Sentry
 if (process.env.SENTRY_DSN) {
@@ -92,6 +93,7 @@ setInterval(async () => {
 
 // Error handler
 app.use('/api/watchlist', watchlistRouter);
+app.use('/api/geofence', geofenceRouter);
 
 app.use(errorHandler);
 
