@@ -11,7 +11,7 @@ const router = Router();
  */
 router.post('/', authenticate, async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user!.userId;
+    const userId = req.user!.id;
     const { name, lat, lng, radiusMeters, type } = req.body;
     if (!name || !lat || !lng || !radiusMeters) {
       return res.status(400).json({ error: 'name, lat, lng, and radiusMeters are required' });
@@ -36,7 +36,7 @@ router.get('/', authenticate, async (req: AuthRequest, res: Response) => {
   try {
     const result = await pool.query(
       'SELECT * FROM geofences WHERE user_id = $1 AND active = true ORDER BY created_at DESC',
-      [req.user!.userId]
+      [req.user!.id]
     );
     return res.json({ success: true, geofences: result.rows });
   } catch (err: any) {
@@ -52,7 +52,7 @@ router.get('/', authenticate, async (req: AuthRequest, res: Response) => {
  */
 router.post('/breach', authenticate, async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user!.userId;
+    const userId = req.user!.id;
     const { geofenceId, breachType, lat, lng, vehiclePlate, description } = req.body;
 
     if (!geofenceId || !breachType) {
@@ -104,7 +104,7 @@ router.delete('/:id', authenticate, async (req: AuthRequest, res: Response) => {
   try {
     await pool.query(
       'UPDATE geofences SET active = false WHERE id = $1 AND user_id = $2',
-      [req.params.id, req.user!.userId]
+      [req.params.id, req.user!.id]
     );
     return res.json({ success: true });
   } catch (err: any) {
