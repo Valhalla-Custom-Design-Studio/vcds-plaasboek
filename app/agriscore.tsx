@@ -71,29 +71,24 @@ export default function AgriScoreScreen() {
       if (cached) {
         setData(JSON.parse(cached));
       }
-      // TODO: Replace with API call when online
-      const mockScore: AgriScoreData = {
-        overall: 72,
-        livestock: 80,
-        finance: 65,
-        security: 70,
-        rainfall: 75,
-        lastUpdated: new Date().toLocaleDateString(),
-        insights: [
-          'Livestock health records are up to date',
-          'Feed costs increased 12% this month',
-          'No security incidents reported in 30 days',
-          'Rainfall 8% below seasonal average',
-        ],
-        recommendations: [
-          'Review feed supplier contracts to reduce costs',
-          'Schedule vet checkup for Camp 3 cattle',
-          'Update emergency contact details',
-          'Install additional camera at northern gate',
-        ],
-      };
-      await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(mockScore));
-      setData(mockScore);
+      // Fetch live AgriScore from API
+      try {
+        const token = await AsyncStorage.getItem('auth_token');
+        const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/agriscore`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (response.ok) {
+          const liveScore: AgriScoreData = await response.json();
+          await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(liveScore));
+          setData(liveScore);
+        } else if (!cached) {
+          // No cache and API failed — show error state
+          setData(null);
+        }
+      } catch (apiErr) {
+        // Offline — use cache only, already set above
+        if (!cached) setData(null);
+      }
     } catch (e) {
       console.error(e);
     } finally {
