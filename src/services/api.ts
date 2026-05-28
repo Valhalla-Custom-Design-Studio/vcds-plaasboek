@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://plaasboek-api.railway.app/api';
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://vcds-plaasboek.onrender.com/api';
 
 export const api = axios.create({
   baseURL: BASE_URL,
@@ -18,10 +18,19 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
+// Handle 401 — clear token and reject
 api.interceptors.response.use(
-  res => res,
-  err => {
+  (res) => res,
+  async (err) => {
+    if (err.response?.status === 401) {
+      try {
+        await SecureStore.deleteItemAsync('auth_token');
+        await SecureStore.deleteItemAsync('refresh_token');
+      } catch {}
+    }
     const msg = err.response?.data?.message || err.message || 'Network error';
     return Promise.reject(new Error(msg));
   }
 );
+
+export default api;
