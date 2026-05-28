@@ -51,7 +51,8 @@ export const OfflineSyncService = {
 
   async enqueue(type: string, data: Record<string, any>): Promise<void> {
     const map = ENDPOINT_MAP[type];
-    if (!map) { console.warn(`[OfflineSync] Unknown type: ${type}`); return; }
+    if (!map) {
+ return; }
     const queue = await this.getQueue();
     const item: QueueItem = {
       id: `${Date.now()}_${Math.random().toString(36).slice(2)}`,
@@ -83,7 +84,7 @@ export const OfflineSyncService = {
       } catch (err: any) {
         item.retries++;
         if (item.retries < 5) remaining.push(item);
-        else console.warn(`[OfflineSync] Dropped after 5 retries: ${item.type} ${item.id}`);
+        else
       }
     }
     await this.saveQueue(remaining);

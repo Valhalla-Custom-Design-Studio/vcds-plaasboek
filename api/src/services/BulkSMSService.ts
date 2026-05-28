@@ -6,7 +6,6 @@ export async function sendSMS(to: string | string[], body: string): Promise<numb
   const tokenId = process.env.BULKSMS_TOKEN_ID;
   const tokenSecret = process.env.BULKSMS_TOKEN_SECRET;
   if (!tokenId || !tokenSecret) {
-    console.warn('[BulkSMS] No credentials configured — SMS skipped');
     return 0;
   }
   const recipients = Array.isArray(to) ? to : [to];

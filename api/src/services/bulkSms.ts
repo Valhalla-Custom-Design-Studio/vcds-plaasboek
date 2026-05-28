@@ -7,7 +7,6 @@ export async function sendSMS(to: string | string[], body: string): Promise<bool
   const tokenSecret = process.env.BULKSMS_TOKEN_SECRET;
 
   if (!tokenId || !tokenSecret) {
-    console.warn('BulkSMS credentials not configured — SMS skipped');
     return false;
   }
 
@@ -23,7 +22,7 @@ export async function sendSMS(to: string | string[], body: string): Promise<bool
       headers: { 'Content-Type': 'application/json' },
       timeout: 15000,
     });
-    console.log(`SMS sent to ${recipients.length} recipient(s):`, res.status);
+:`, res.status);
     return true;
   } catch (err: any) {
     console.error('BulkSMS error:', err?.response?.data || err.message);

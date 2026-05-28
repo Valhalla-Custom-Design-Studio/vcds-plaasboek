@@ -145,7 +145,6 @@ router.post('/alert-webhook', async (req: Request, res: Response) => {
       return;
     }
     const { event, plate_number, threat_level, camera_id, timestamp } = req.body;
-    console.log(`[Watchlist Alert] ${event}: ${plate_number} | Threat: ${threat_level} | Camera: ${camera_id} | ${timestamp}`);
     // Wire Expo push notifications to registered app users
     try {
       const tokenRows = await pool.query('SELECT push_token FROM push_tokens WHERE push_token IS NOT NULL');

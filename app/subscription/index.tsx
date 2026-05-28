@@ -45,7 +45,6 @@ export default function SubscriptionScreen() {
       setPlans(plansRes.data.plans || []);
       setSubscription(subRes.data.subscription || null);
     } catch (e) {
-      console.warn('[Subscription] load error', e);
     } finally {
       setLoading(false);
     }

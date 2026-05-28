@@ -63,7 +63,6 @@ paymentsRouter.post('/notify', async (req: Request, res: Response): Promise<void
     const signature = crypto.createHash('md5').update(signatureString).digest('hex');
 
     if (signature !== data.signature) {
-      console.warn('PayFast signature mismatch');
       res.status(400).send('Invalid signature');
       return;
     }

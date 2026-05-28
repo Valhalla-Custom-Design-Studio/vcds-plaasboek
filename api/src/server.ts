@@ -84,7 +84,7 @@ setInterval(async () => {
         "INSERT INTO sos_events (user_id, trigger_type, message, status) VALUES ($1,'dms','Dead Man Switch triggered — no heartbeat received','active')",
         [dms.uid]
       );
-      console.log(`DMS triggered for user ${dms.name} (${dms.uid})`);
+`);
     }
   } catch (err) {
     console.error('DMS cron error:', err);
@@ -98,7 +98,6 @@ app.use('/api/geofence', geofenceRouter);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`Plaasboek API running on port ${PORT} [${process.env.NODE_ENV || 'production'}]`);
 });
 
 export default app;
