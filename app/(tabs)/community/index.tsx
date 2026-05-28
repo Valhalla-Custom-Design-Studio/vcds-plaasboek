@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { Colors } from '../../../src/theme';
-import { useAuthStore } from '../../../src/store/auth';
+import { useAuth } from '../../../src/context/AuthContext';
 
 type Alert = {
   id: string; type: 'aanval' | 'verdagte' | 'brand' | 'vloed' | 'diefstal' | 'ander';
@@ -10,7 +10,7 @@ type Alert = {
 };
 
 export default function CommunityScreen() {
-  const { token } = useAuthStore();
+  const { token } = useAuth();
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
