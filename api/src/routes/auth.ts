@@ -7,7 +7,7 @@ import { authenticate, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
-const DEFAULT_CONTACTQ€= [
+const DEFAULT_CONTACTS = [
   { name: 'SAPS', phone: '10111', category: 'saps' },
   { name: 'Ambulansie', phone: '10177', category: 'ambulance' },
   { name: 'Brandweer', phone: '10177', category: 'fire' },
