@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Plaasboek™",
+    "name": "Plaasboek\u2122",
     "slug": "plaasboek",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -110,9 +110,6 @@
       "enabled": true,
       "fallbackToCacheTimeout": 0
     },
-    "owner": "valhalla-custom-design-studios-org",
-    "eas": {
-      "projectId": "56de3c11-ecf2-4e1f-9349-b42b5fd1eb0e"
-    }
+    "owner": "valhalla-custom-design-studios-org"
   }
 }
