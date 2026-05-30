@@ -24,6 +24,11 @@
       },
       "ios": {
         "image": "latest"
+      },
+      "env": {
+        "SENTRY_AUTH_TOKEN": "$SENTRY_AUTH_TOKEN",
+        "SENTRY_ORG": "valhalla-custom-design-studios",
+        "SENTRY_PROJECT": "plaasboek"
       }
     },
     "production": {
@@ -33,6 +38,11 @@
       },
       "ios": {
         "image": "latest"
+      },
+      "env": {
+        "SENTRY_AUTH_TOKEN": "$SENTRY_AUTH_TOKEN",
+        "SENTRY_ORG": "valhalla-custom-design-studios",
+        "SENTRY_PROJECT": "plaasboek"
       }
     }
   },
