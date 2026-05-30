@@ -27,7 +27,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     AsyncStorage.getItem('app_language').then(saved => {
       if (saved === 'en' || saved === 'af') setLangState(saved);
-    });
+    }).catch((e) => console.warn('[LanguageContext]', e));
   }, []);
 
   const setLang = async (newLang: Lang) => {
