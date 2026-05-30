@@ -18,7 +18,7 @@ export default function Reports() {
   const [loading, setLoading] = useState(true);
   const t = T[lang];
 
-  useEffect(() => { AsyncStorage.getItem('lang').then(v => v && setLang(v as any)); }, []);
+  useEffect(() => { AsyncStorage.getItem('lang').then(v => v && setLang(v as any)).catch((e) => console.warn('[reports]', e)); }, []);
 
   useEffect(() => {
     const load = async () => {
