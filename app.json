@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Plaasboek\u2122",
+    "name": "Plaasboek™",
     "slug": "plaasboek",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -90,6 +90,13 @@
           "android": {
             "kotlinVersion": "1.9.25"
           }
+        }
+      ],
+      [
+        "@sentry/react-native/expo",
+        {
+          "organization": "valhalla-custom-design-studios",
+          "project": "plaasboek"
         }
       ]
     ],
