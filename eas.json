@@ -41,11 +41,6 @@
       "android": {
         "serviceAccountKeyPath": "./google-service-account.json",
         "track": "internal"
-      },
-      "ios": {
-        "appleId": "stephan@vcds.co.za",
-        "ascAppId": "",
-        "appleTeamId": ""
       }
     }
   }
