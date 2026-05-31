@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, RefreshControl, TextInput, Modal } from 'react-native';
+import {
+  View, Text, FlatList, TouchableOpacity, StyleSheet,
+  Alert, RefreshControl, TextInput, Modal,
+} from 'react-native';
 import { router } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { api } from '../../../src/services/api';
 import { useLanguage } from '../../../src/context/LanguageContext';
 import { useAuth } from '../../../src/context/AuthContext';
@@ -8,7 +12,9 @@ import { GlassCard } from '../../../src/components/GlassCard';
 import { GradientButton } from '../../../src/components/GradientButton';
 import { OfflineBanner } from '../../../src/components/OfflineBanner';
 import { FloatingSosButton } from '../../../src/components/FloatingSosButton';
-import { Colors, Spacing, Radius } from '../../../src/theme';
+import { EmptyState } from '../../../src/components/ui/EmptyState';
+import { PlatinumCard } from '../../../src/components/ui/PlatinumCard';
+import { Colors, Spacing, Radius, Shadow } from '../../../src/theme';
 
 export default function LivestockScreen() {
   const { t } = useLanguage();
@@ -44,39 +50,55 @@ export default function LivestockScreen() {
   };
 
   const renderItem = ({ item }: any) => (
-    <TouchableOpacity onPress={() => router.push(`/(tabs)/livestock/camp/${item.id}`)}>
-      <GlassCard style={styles.card}>
+    <TouchableOpacity onPress={() => router.push(`/(tabs)/livestock/camp/${item.id}` as any)}>
+      <PlatinumCard style={styles.card} accentColor={Colors.primary}>
         <View style={styles.row}>
-          <Text style={styles.campName}>{item.name}</Text>
+          <View>
+            <Text style={styles.campName}>{item.name}</Text>
+            <Text style={styles.campSub}>Kamp</Text>
+          </View>
           <View style={styles.countBadge}>
             <Text style={styles.countText}>{item.current_count}</Text>
             <Text style={styles.countLabel}> {t('livestock.head')}</Text>
           </View>
         </View>
-      </GlassCard>
+      </PlatinumCard>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
       <OfflineBanner />
-      <View style={styles.header}>
+      <LinearGradient colors={['#0C1A0F', '#132218']} style={styles.header}>
         <Text style={styles.title}>{t('livestock.title')}</Text>
-        <TouchableOpacity style={styles.vetBtn} onPress={() => router.push('/(tabs)/livestock/vet-visits')}>
+        <TouchableOpacity
+          style={styles.vetBtn}
+          onPress={() => router.push('/(tabs)/livestock/vet-visits' as any)}
+        >
           <Text style={styles.vetBtnText}>💉 {t('livestock.vetVisits')}</Text>
         </TouchableOpacity>
-      </View>
+      </LinearGradient>
       <FlatList
         data={camps}
         keyExtractor={i => i.id}
         renderItem={renderItem}
         contentContainerStyle={styles.list}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={Colors.primary} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => { setRefreshing(true); load(); }}
+            tintColor={Colors.primary}
+          />
+        }
         ListEmptyComponent={!loading ? (
-          <View style={styles.empty}>
-            <Text style={styles.emptyEmoji}>🐄</Text>
-            <Text style={styles.emptyText}>{t('livestock.noCamps')}</Text>
-          </View>
+          <EmptyState
+            emoji="🐄"
+            title={t('livestock.noCamps')}
+            subtitle="Voeg jou eerste kamp by om jou veestapel te bestuur."
+            ctaLabel="+ Voeg Kamp By"
+            onCta={() => setShowAddCamp(true)}
+            accentColor={Colors.primary}
+          />
         ) : null}
       />
       <View style={styles.fab}>
@@ -100,7 +122,12 @@ export default function LivestockScreen() {
               <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowAddCamp(false)}>
                 <Text style={styles.cancelText}>{t('common.cancel')}</Text>
               </TouchableOpacity>
-              <GradientButton title={saving ? t('common.loading') : t('common.save')} onPress={handleAddCamp} disabled={saving} style={styles.saveBtn} />
+              <GradientButton
+                title={saving ? t('common.loading') : t('common.save')}
+                onPress={handleAddCamp}
+                disabled={saving}
+                style={styles.saveBtn}
+              />
             </View>
           </GlassCard>
         </View>
@@ -111,25 +138,32 @@ export default function LivestockScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: Spacing.md },
-  title: { fontSize: 24, fontWeight: '800', color: Colors.text },
-  vetBtn: { backgroundColor: Colors.primary + '22', paddingHorizontal: Spacing.sm, paddingVertical: 6, borderRadius: Radius.sm },
+  header: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    paddingHorizontal: Spacing.md, paddingTop: 52, paddingBottom: 16,
+  },
+  title: { fontSize: 24, fontWeight: '800', color: '#F0FDF4' },
+  vetBtn: {
+    backgroundColor: (Colors.primary || '#15803D') + '22',
+    paddingHorizontal: Spacing.sm, paddingVertical: 6, borderRadius: Radius.sm,
+  },
   vetBtnText: { color: Colors.primary, fontWeight: '700', fontSize: 13 },
-  list: { paddingHorizontal: Spacing.md, paddingBottom: 120 },
+  list: { paddingHorizontal: Spacing.md, paddingBottom: 120, paddingTop: 8 },
   card: { marginBottom: Spacing.sm },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  campName: { fontSize: 18, fontWeight: '700', color: Colors.text },
+  campName: { fontSize: 18, fontWeight: '700', color: '#F0FDF4' },
+  campSub: { color: '#86EFAC', fontSize: 12, marginTop: 2 },
   countBadge: { flexDirection: 'row', alignItems: 'baseline' },
   countText: { fontSize: 24, fontWeight: '800', color: Colors.primary },
-  countLabel: { color: Colors.textSecondary, fontSize: 13 },
-  empty: { alignItems: 'center', marginTop: 60 },
-  emptyEmoji: { fontSize: 48, marginBottom: Spacing.sm },
-  emptyText: { color: Colors.textSecondary, fontSize: 16 },
+  countLabel: { color: '#86EFAC', fontSize: 13 },
   fab: { position: 'absolute', bottom: Spacing.lg, left: Spacing.md, right: Spacing.md },
   modalOverlay: { flex: 1, backgroundColor: '#00000088', justifyContent: 'flex-end' },
   modal: { margin: Spacing.md, marginBottom: Spacing.xl },
-  modalTitle: { fontSize: 18, fontWeight: '700', color: Colors.text, marginBottom: Spacing.md },
-  input: { backgroundColor: Colors.surface, color: Colors.text, borderRadius: Radius.sm, padding: Spacing.sm, fontSize: 16, borderWidth: 1, borderColor: Colors.border, marginBottom: Spacing.md },
+  modalTitle: { fontSize: 18, fontWeight: '700', color: '#F0FDF4', marginBottom: Spacing.md },
+  input: {
+    backgroundColor: Colors.surface, color: '#F0FDF4', borderRadius: Radius.sm,
+    padding: Spacing.sm, fontSize: 16, borderWidth: 1, borderColor: Colors.border, marginBottom: Spacing.md,
+  },
   modalActions: { flexDirection: 'row', gap: Spacing.sm },
   cancelBtn: { flex: 1, padding: Spacing.sm, alignItems: 'center', borderRadius: Radius.sm, backgroundColor: Colors.surface },
   cancelText: { color: Colors.textSecondary, fontWeight: '600' },

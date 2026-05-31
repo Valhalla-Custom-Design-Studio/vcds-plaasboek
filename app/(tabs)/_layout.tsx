@@ -1,12 +1,10 @@
 import { Tabs, Redirect } from 'expo-router';
 import { Text } from 'react-native';
 import { useAuth } from '../../src/context/AuthContext';
-import { useLanguage } from '../../src/context/LanguageContext';
-import { Colors } from '../../src/theme';
+import { Colors, Shadow } from '../../src/theme';
 
 export default function TabsLayout() {
   const { user, isLoading } = useAuth();
-  const { t } = useLanguage();
   if (!isLoading && !user) return <Redirect href="/auth/login" />;
 
   const tabs = [
@@ -28,16 +26,17 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: Colors.primary || '#D97706',
-        tabBarInactiveTintColor: '#555555',
+        tabBarActiveTintColor: Colors.gold || '#F59E0B',
+        tabBarInactiveTintColor: 'rgba(255,255,255,0.35)',
         tabBarStyle: {
-          backgroundColor: '#0A0A0A',
+          backgroundColor: Colors.tabBar || '#0F1F13',
           borderTopColor: 'rgba(255,255,255,0.06)',
           borderTopWidth: 1,
-          height: 60,
+          height: 62,
           paddingBottom: 8,
+          ...Shadow.sm,
         },
-        tabBarLabelStyle: { fontSize: 10, marginBottom: 4 },
+        tabBarLabelStyle: { fontSize: 10, marginBottom: 2, fontWeight: '600' },
       }}
     >
       {tabs.map(tab => (
@@ -46,8 +45,14 @@ export default function TabsLayout() {
           name={tab.name}
           options={{
             title: tab.label,
-            tabBarIcon: ({ color }) => (
-              <Text style={{ fontSize: 20, color }}>{tab.emoji}</Text>
+            tabBarIcon: ({ color, focused }) => (
+              <Text style={{
+                fontSize: 20,
+                color,
+                ...(focused ? Shadow.glow(Colors.gold || '#F59E0B') : {}),
+              }}>
+                {tab.emoji}
+              </Text>
             ),
           }}
         />
