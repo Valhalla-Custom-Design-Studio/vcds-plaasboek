@@ -1,26 +1,25 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useSubscription } from '../src/hooks/useSubscription';
-import { PaywallGate } from '../src/components/PaywallGate';
-import AgriScoreContent from '../src/screens/AgriScoreContent';
+import { View, Text, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+import { PaywallGate } from '../../src/components/PaywallGate';
 
-export default function AgriScoreScreen() {
-  const { tier } = useSubscription();
+export default function Screen() {
+  const router = useRouter();
   return (
-    <View style={s.container}>
-      <PaywallGate
-        required="pro"
-        currentTier={tier}
-        subscribeRoute="/subscription"
-        featureName="AgriScore™"
-        accentColor="#16A34A"
-      >
-        <AgriScoreContent />
-      </PaywallGate>
-    </View>
+    <PaywallGate
+      appId="plaasboek"
+      feature="agriscore_ai"
+      requiredTier="pro"
+      accentColor="#16A34A"
+      onUpgrade={() => router.push('/subscription')}
+    >
+      <View style={styles.container}>
+        <Text style={styles.title}>AgriScore™ AI</Text>
+      </View>
+    </PaywallGate>
   );
 }
-
-const s = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0C1A0F' },
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#0A0A0F', padding: 16 },
+  title: { color: '#FFFFFF', fontSize: 22, fontWeight: '700' },
 });
