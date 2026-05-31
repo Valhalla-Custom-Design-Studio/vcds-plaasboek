@@ -1,26 +1,25 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useSubscription } from '../../src/hooks/useSubscription';
+import { View, Text, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import { PaywallGate } from '../../src/components/PaywallGate';
-import PatternLearnContent from '../../src/screens/PatternLearnContent';
 
-export default function PatternLearnScreen() {
-  const { tier } = useSubscription();
+export default function Screen() {
+  const router = useRouter();
   return (
-    <View style={s.container}>
-      <PaywallGate
-        required="platinum"
-        currentTier={tier}
-        subscribeRoute="/subscription"
-        featureName="PatternLearn™"
-        accentColor="#C9A84C"
-      >
-        <PatternLearnContent />
-      </PaywallGate>
-    </View>
+    <PaywallGate
+      appId="plaasboek"
+      feature="pattern_learn_ai"
+      requiredTier="platinum"
+      accentColor="#16A34A"
+      onUpgrade={() => router.push('/subscription')}
+    >
+      <View style={styles.container}>
+        <Text style={styles.title}>PatternLearn™ AI</Text>
+      </View>
+    </PaywallGate>
   );
 }
-
-const s = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0C1A0F' },
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#0A0A0F', padding: 16 },
+  title: { color: '#FFFFFF', fontSize: 22, fontWeight: '700' },
 });
