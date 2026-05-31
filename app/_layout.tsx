@@ -1,3 +1,4 @@
+import React from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -10,6 +11,7 @@ import { FloatingSosButton } from '../src/components/FloatingSosButton';
 import { OfflineBanner } from '../src/components/OfflineBanner';
 import { useOffline } from '../src/context/OfflineContext';
 import { usePathname } from 'expo-router';
+import AnimatedSplash from '../src/components/AnimatedSplash';
 
 // ─── Sentry init ─────────────────────────────────────────────
 Sentry.init({
@@ -75,6 +77,8 @@ function InnerLayout() {
 }
 
 export default Sentry.wrap(function RootLayout() {
+  const [splashDone, setSplashDone] = React.useState(false);
+  if (!splashDone) return <AnimatedSplash onFinish={() => setSplashDone(true)} />;
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PostHogProvider
