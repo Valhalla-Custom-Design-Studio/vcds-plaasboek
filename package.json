@@ -16,7 +16,7 @@
     "@react-native-async-storage/async-storage": "^2.1.0",
     "@react-native-community/netinfo": "^11.4.1",
     "@sentry/react-native": "~6.14.0",
-    "axios": "^1.7.0",
+    "axios": "^1.8.4",
     "expo": "~54.0.0",
     "expo-asset": "~11.1.7",
     "expo-build-properties": "~0.14.8",
@@ -42,7 +42,7 @@
     "react-native-svg": "15.11.2",
     "react-dom": "19.0.0",
     "supertest": "^7.0.0",
-    "express": "^4.21.0"
+    "express": "^4.21.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.0",
@@ -56,5 +56,15 @@
     "@playwright/test": "^1.50.0",
     "@types/supertest": "^6.0.0",
     "@types/express": "^5.0.0"
+  },
+  "overrides": {
+    "follow-redirects": "^1.15.9",
+    "semver": "^7.6.0",
+    "word-wrap": "^1.2.5",
+    "tough-cookie": "^4.1.4",
+    "ws": "^8.18.0",
+    "undici": "^6.21.0",
+    "braces": "^3.0.3",
+    "micromatch": "^4.0.8"
   }
 }
