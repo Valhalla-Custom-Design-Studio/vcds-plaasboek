@@ -13,7 +13,9 @@ CREATE TABLE IF NOT EXISTS users (
   vat_number VARCHAR(20),
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  reset_token VARCHAR(255),
+  reset_token_expires TIMESTAMPTZ
 );
 
 CREATE TABLE IF NOT EXISTS plans (
