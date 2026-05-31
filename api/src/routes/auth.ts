@@ -1,5 +1,7 @@
 import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
+import { sendPasswordResetEmail } from '../services/mailer';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { pool } from '../db/pool';
@@ -81,6 +83,36 @@ router.get('/me', authenticate, async (req: AuthRequest, res: Response): Promise
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });
   }
+});
+
+
+router.post('/forgot-password', async (req: Request, res: Response) => {
+  const { email } = req.body;
+  if (!email) { res.status(400).json({ success: false, message: 'Email required' }); return; }
+  try {
+    const { rows } = await pool.query('SELECT id FROM users WHERE email=$1', [email.toLowerCase()]);
+    if (!rows.length) { res.json({ success: true, message: 'If that email exists, a reset link was sent' }); return; }
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const expires = new Date(Date.now() + 3600000);
+    await pool.query('UPDATE users SET reset_token=$1,reset_token_expires=$2 WHERE id=$3', [resetToken, expires, rows[0].id]);
+    if (process.env.NODE_ENV !== 'development') {
+      await sendPasswordResetEmail(email.toLowerCase(), resetToken, 'Plaasboek™');
+    }
+    res.json({ success: true, message: 'If that email exists, a reset link was sent', debug_token: process.env.NODE_ENV === 'development' ? resetToken : undefined });
+  } catch(e) { res.status(500).json({ success: false, message: 'Failed' }); }
+});
+
+router.post('/reset-password', async (req: Request, res: Response) => {
+  const { token, password } = req.body;
+  if (!token || !password) { res.status(400).json({ success: false, message: 'Token and password required' }); return; }
+  if (password.length < 8) { res.status(400).json({ success: false, message: 'Password must be at least 8 characters' }); return; }
+  try {
+    const { rows } = await pool.query('SELECT id FROM users WHERE reset_token=$1 AND reset_token_expires>NOW()', [token]);
+    if (!rows.length) { res.status(400).json({ success: false, message: 'Invalid or expired token' }); return; }
+    const hash = await bcrypt.hash(password, 12);
+    await pool.query('UPDATE users SET password_hash=$1,reset_token=NULL,reset_token_expires=NULL WHERE id=$2', [hash, rows[0].id]);
+    res.json({ success: true, message: 'Password reset successful' });
+  } catch(e) { res.status(500).json({ success: false, message: 'Failed' }); }
 });
 
 export default router;
