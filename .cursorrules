@@ -1,0 +1,80 @@
+# VCDS™ Cursor Rules — Plaasboek™ (vcds-plaasboek)
+# Owner: Stephan Lombard | VCDS Holdings | Heidelberg, Gauteng, SA
+# ODIN™ AI CTO — Do NOT deviate from these rules
+
+## PROJECT IDENTITY
+- App: Plaasboek™
+- Description: SA Farm Management Platform
+- Bundle ID: co.za.vcds.plaasboek
+- Organisation: Valhalla-Custom-Design-Studio (GitHub)
+- Owner: Stephan Lombard (sole developer)
+
+## TECH STACK — NEVER SUGGEST ALTERNATIVES
+- Frontend: React Native + Expo SDK 53 (managed workflow)
+- Backend: NestJS (TypeScript)
+- Database: PostgreSQL + pgvector
+- Cache: Redis
+- AI: OpenAI + Anthropic + LangChain
+- Storage: Cloudflare R2
+- Hosting: Render ONLY — never Railway, Heroku, Vercel, AWS, GCP, Azure
+- Payments: PayFast ONLY — never Stripe, PayPal, or other gateways
+- Push: Expo Notifications + FCM V1
+
+## NODE & BUILD RULES
+- Node version: 20.x (NEVER 22 or 24 — Expo 53 incompatible)
+- Package manager: npm with legacy-peer-deps=true
+- Build: EAS Build (cloud) — profile: preview (AAB), production (signed AAB)
+- NEVER suggest bare React Native workflow or ejecting from Expo
+- NEVER modify android/ or ios/ folders directly
+- ALWAYS use `npx expo install` for Expo-compatible packages
+
+## CODE STYLE
+- Language: TypeScript strict mode throughout
+- Naming: camelCase variables, PascalCase components, SCREAMING_SNAKE for constants
+- No `any` types — always define proper interfaces
+- All API calls must have error boundaries and loading states
+- All screens must have empty states designed
+
+## UI/UX RULES
+- Design system: Deep teal (#0D2B2B) + gold (#C9A84C) + glass morphism
+- Gradients: expo-linear-gradient ONLY
+- Icons: @expo/vector-icons ONLY
+- Maps: react-native-maps with Google Maps provider
+- Animations: react-native-reanimated + react-native-gesture-handler
+- NEVER use plain white backgrounds — always dark teal or glass
+- All premium features must be behind freemium paywall gates
+
+## APP-SPECIFIC FEATURES
+- farm diary
+- livestock tracking
+- AI pattern learning
+- weather integration
+- farm records
+
+## IP PROTECTION — CRITICAL
+- NEVER expose VONK™ CHEMIE™ algorithm logic in any file
+- NEVER expose Die Kluis™ patent-pending features publicly
+- Flag any novel AI feature before building — escalate to Stephan
+- All AI features must be described as "AI-powered intelligence" or "AI-assisted" — NEVER just "AI"
+
+## BRANDING RULES
+- Company: VCDS Holdings (NOT "Valhalla Custom Design Studios" in user-facing copy)
+- NEVER use "AI" alone — always "AI-powered" or "AI-assisted"
+- All trademarks use ™ symbol
+
+## WHAT TO FIX AUTOMATICALLY
+- Missing closing braces in JSON/app.json
+- Invalid plugin entries in app.json (remove if package doesn't support config plugins)
+- Missing expo- package installations
+- Node version mismatches
+- npm warn Unknown project config entries in .npmrc
+- Sentry upload failures (non-blocking — wrap in try/catch)
+- Missing asset files referenced in app.json
+
+## WHAT NEVER TO DO
+- Never change launch dates or pricing
+- Never add new dependencies without checking Expo 53 compatibility first
+- Never push directly to main — always feature branch + PR
+- Never use force push to main/master
+- Never expose .env secrets or API keys in code
+- Never suggest ejecting from Expo managed workflow
