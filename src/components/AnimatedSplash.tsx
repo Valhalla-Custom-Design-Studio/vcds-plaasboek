@@ -58,7 +58,7 @@ export default function AnimatedSplash({ onFinish }: AnimatedSplashProps) {
         }}
       >
         <Image
-          source={require('../assets/splash-animated.webp')}
+          source={require('../../assets/splash-animated.webp')}
           style={styles.splash}
           resizeMode="cover"
         />
