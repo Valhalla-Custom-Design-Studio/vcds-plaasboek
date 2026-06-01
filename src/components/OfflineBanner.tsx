@@ -23,11 +23,11 @@ export function OfflineBanner(props: Props) {
 
   if (!isOnline) {
     message = pendingCount > 0
-      ? `📵 Offline — ${pendingCount} item${pendingCount > 1 ? 's' : ''} queued`
+      ? `\u{1F4F5} Offline \u2014 ${pendingCount} item${pendingCount > 1 ? 's' : ''} queued`
       : '📵 Offline — changes will sync when connected';
     bgColor = Colors.error;
   } else if (isSyncing) {
-    message = `🔄 Syncing ${pendingCount} item${pendingCount > 1 ? 's' : ''}...`;
+    message = `\u{1F504} Syncing ${pendingCount} item${pendingCount > 1 ? 's' : ''}...`;
     bgColor = Colors.primary;
   }
 

@@ -97,7 +97,7 @@ export function FloatingSosButton() {
           await SMS.sendSMSAsync(phones, body);
         }
       }
-      Alert.alert(t('sos.sent_'), `${t('sos.sent_')} — ${notifiedCount} push, ${smsCount} SMS`);
+      Alert.alert(t('sos.sent_'), `${t('sos.sent_')} \u2014 ${notifiedCount} push, ${smsCount} SMS`);
     } catch (err: any) {
       Alert.alert(t('common.error'), err.message);
     } finally {
