@@ -22,7 +22,8 @@
         "EXPO_PUBLIC_POSTHOG_KEY": "phc_w8M2RMQe86ghfbEgYUu4TWhgxZyL9EHDvPVLJBUcoxHC",
         "SENTRY_ORG": "valhalla-custom-design-studios",
         "SENTRY_PROJECT": "plaasboek",
-        "SENTRY_AUTH_TOKEN": "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"
+        "SENTRY_AUTH_TOKEN": "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",
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
       }
     },
     "preview": {
@@ -41,7 +42,8 @@
         "EXPO_PUBLIC_API_URL": "https://vcds-plaasboek.onrender.com",
         "EXPO_PUBLIC_SENTRY_DSN": "https://1b6c309c189780c7ef9a9e8fea7096d3@o4511432712650752.ingest.de.sentry.io/4511461329666128",
         "EXPO_PUBLIC_POSTHOG_KEY": "phc_w8M2RMQe86ghfbEgYUu4TWhgxZyL9EHDvPVLJBUcoxHC",
-        "SENTRY_AUTH_TOKEN": "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"
+        "SENTRY_AUTH_TOKEN": "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",
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
       }
     },
     "production": {
@@ -59,7 +61,8 @@
         "EXPO_PUBLIC_API_URL": "https://vcds-plaasboek.onrender.com",
         "EXPO_PUBLIC_SENTRY_DSN": "https://1b6c309c189780c7ef9a9e8fea7096d3@o4511432712650752.ingest.de.sentry.io/4511461329666128",
         "EXPO_PUBLIC_POSTHOG_KEY": "phc_w8M2RMQe86ghfbEgYUu4TWhgxZyL9EHDvPVLJBUcoxHC",
-        "SENTRY_AUTH_TOKEN": "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"
+        "SENTRY_AUTH_TOKEN": "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",
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
       }
     }
   },
