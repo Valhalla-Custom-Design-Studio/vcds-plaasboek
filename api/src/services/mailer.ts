@@ -20,7 +20,7 @@ export async function sendPasswordResetEmail(
   await transporter.sendMail({
     from: `"${appName}" <${process.env.SMTP_USER}>`,
     to,
-    subject: `${appName} — Wagwoord Herstel Versoek`,
+    subject: `${appName}  -  Wagwoord Herstel Versoek`,
     html: `
       <div style="font-family:sans-serif;max-width:480px;margin:0 auto;">
         <h2 style="color:#78350F;">${appName}</h2>
