@@ -14,6 +14,12 @@
       "ios": {
         "image": "sdk-53",
         "simulator": true
+      },
+      "env": {
+        "EXPO_PUBLIC_PAYFAST_API_URL": "https://www.payfast.co.za",
+        "EXPO_PUBLIC_API_URL": "https://vcds-plaasboek.onrender.com",
+        "EXPO_PUBLIC_SENTRY_DSN": "https://1b6c309c189780c7ef9a9e8fea7096d3@o4511432712650752.ingest.de.sentry.io/4511461329666128",
+        "EXPO_PUBLIC_POSTHOG_KEY": "phc_w8M2RMQe86ghfbEgYUu4TWhgxZyL9EHDvPVLJBUcoxHC"
       }
     },
     "preview": {
@@ -28,7 +34,11 @@
       "env": {
         "SENTRY_AUTH_TOKEN": "$SENTRY_AUTH_TOKEN",
         "SENTRY_ORG": "valhalla-custom-design-studios",
-        "SENTRY_PROJECT": "plaasboek"
+        "SENTRY_PROJECT": "plaasboek",
+        "EXPO_PUBLIC_PAYFAST_API_URL": "https://www.payfast.co.za",
+        "EXPO_PUBLIC_API_URL": "https://vcds-plaasboek.onrender.com",
+        "EXPO_PUBLIC_SENTRY_DSN": "https://1b6c309c189780c7ef9a9e8fea7096d3@o4511432712650752.ingest.de.sentry.io/4511461329666128",
+        "EXPO_PUBLIC_POSTHOG_KEY": "phc_w8M2RMQe86ghfbEgYUu4TWhgxZyL9EHDvPVLJBUcoxHC"
       }
     },
     "production": {
@@ -42,7 +52,11 @@
       "env": {
         "SENTRY_AUTH_TOKEN": "$SENTRY_AUTH_TOKEN",
         "SENTRY_ORG": "valhalla-custom-design-studios",
-        "SENTRY_PROJECT": "plaasboek"
+        "SENTRY_PROJECT": "plaasboek",
+        "EXPO_PUBLIC_PAYFAST_API_URL": "https://www.payfast.co.za",
+        "EXPO_PUBLIC_API_URL": "https://vcds-plaasboek.onrender.com",
+        "EXPO_PUBLIC_SENTRY_DSN": "https://1b6c309c189780c7ef9a9e8fea7096d3@o4511432712650752.ingest.de.sentry.io/4511461329666128",
+        "EXPO_PUBLIC_POSTHOG_KEY": "phc_w8M2RMQe86ghfbEgYUu4TWhgxZyL9EHDvPVLJBUcoxHC"
       }
     }
   },
