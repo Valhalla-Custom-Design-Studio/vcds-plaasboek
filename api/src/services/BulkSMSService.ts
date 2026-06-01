@@ -6,7 +6,7 @@ export async function sendSMS(to: string | string[], body: string): Promise<numb
   const tokenId = process.env.BULKSMS_TOKEN_ID;
   const tokenSecret = process.env.BULKSMS_TOKEN_SECRET;
   if (!tokenId || !tokenSecret) {
-    console.warn('[BulkSMS] No credentials configured — SMS skipped');
+    console.warn('[BulkSMS] No credentials configured  -  SMS skipped');
     return 0;
   }
   const recipients = Array.isArray(to) ? to : [to];
@@ -77,7 +77,7 @@ export function buildSOSMessage(
 
 export function buildStandDownMessage(lang: 'af' | 'en', name: string, farm: string): string {
   if (lang === 'af') {
-    return `VEILIG — Alarm gekanselleer\n${name} (${farm}) het bevestig dat alles veilig is.\nGeen verdere aksie nodig nie.`;
+    return `VEILIG  -  Alarm gekanselleer\n${name} (${farm}) het bevestig dat alles veilig is.\nGeen verdere aksie nodig nie.`;
   }
-  return `SAFE — Alert cancelled\n${name} (${farm}) has confirmed all is safe.\nNo further action needed.`;
+  return `SAFE  -  Alert cancelled\n${name} (${farm}) has confirmed all is safe.\nNo further action needed.`;
 }

@@ -1,5 +1,5 @@
 /**
- * Nasdaq Data Link (Quandl) — SA commodity prices
+ * Nasdaq Data Link (Quandl)  -  SA commodity prices
  * Free tier: 50 calls/day
  * Use case: Maize, wheat, beef, wool prices for farm P&L
  */

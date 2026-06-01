@@ -7,7 +7,7 @@ export async function sendSMS(to: string | string[], body: string): Promise<bool
   const tokenSecret = process.env.BULKSMS_TOKEN_SECRET;
 
   if (!tokenId || !tokenSecret) {
-    console.warn('BulkSMS credentials not configured — SMS skipped');
+    console.warn('BulkSMS credentials not configured  -  SMS skipped');
     return false;
   }
 
@@ -33,6 +33,6 @@ export async function sendSMS(to: string | string[], body: string): Promise<bool
 
 export async function sendSOSSms(contacts: { phone: string; name: string }[], farmerName: string, lat?: number, lng?: number): Promise<void> {
   const locationStr = lat && lng ? `\nLigging: https://maps.google.com/?q=${lat},${lng}` : '';
-  const body = `🚨 NOODGEVAL - ${farmerName} het 'n SOS gestuur!${locationStr}\nBel onmiddellik of gaan kyk. - Plaasboek™`;
+  const body = `🚨 NOODGEVAL - ${farmerName} het 'n SOS gestuur!${locationStr}\nBel onmiddellik of gaan kyk. - Plaasboek(TM)`;
   await Promise.all(contacts.map(c => sendSMS(c.phone, body)));
 }

@@ -1,6 +1,6 @@
 /**
- * AgriScore™ — SA-First agricultural creditworthiness score
- * PATENT PENDING — VCDS™ IP Asset
+ * AgriScore(TM)  -  SA-First agricultural creditworthiness score
+ * PATENT PENDING  -  VCDS(TM) IP Asset
  * Licensable to: Land Bank, Absa AgriBusiness, Nedbank Agri, FNB Agriculture
  */
 
@@ -70,10 +70,10 @@ export function calculateAgriScore(input: AgriScoreInput): AgriScore {
   const recommendedInterestRate = score >= 750 ? 8.5 : score >= 700 ? 9.5 : score >= 650 ? 11 : score >= 600 ? 13 : 15;
 
   const lenderRecommendations = [];
-  if (score >= 650) lenderRecommendations.push("Land Bank — Production Loan");
-  if (score >= 700) lenderRecommendations.push("Absa AgriBusiness — Term Loan");
-  if (score >= 750) lenderRecommendations.push("Nedbank Agri — Asset Finance");
-  if (score >= 600) lenderRecommendations.push("MAFISA — Smallholder Loan");
+  if (score >= 650) lenderRecommendations.push("Land Bank  -  Production Loan");
+  if (score >= 700) lenderRecommendations.push("Absa AgriBusiness  -  Term Loan");
+  if (score >= 750) lenderRecommendations.push("Nedbank Agri  -  Asset Finance");
+  if (score >= 600) lenderRecommendations.push("MAFISA  -  Smallholder Loan");
 
   const improvementTips = [];
   if (!input.hasCropInsurance) improvementTips.push("Get crop/livestock insurance (+15 points)");

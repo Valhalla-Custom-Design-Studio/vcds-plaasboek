@@ -103,13 +103,13 @@ router.delete('/:id', authenticate, async (req: Request, res: Response) => {
   } catch { res.status(500).json({ error: 'Delete failed' }); }
 });
 
-// POST /records/ai-parse — Voice/text to record
+// POST /records/ai-parse  -  Voice/text to record
 router.post('/ai-parse', authenticate, async (req: Request, res: Response) => {
   try {
     const { text } = req.body;
     if (!text) return res.status(400).json({ error: 'text required' });
 
-    // AI parser — rule-based NLP (LLM-ready)
+    // AI parser  -  rule-based NLP (LLM-ready)
     const lower = text.toLowerCase();
     let type = lower.includes('verkoop') || lower.includes('sold') || lower.includes('ontvang') || lower.includes('received') ? 'income' : 'expense';
 
@@ -161,7 +161,7 @@ router.get('/agrifinance-score', authenticate, async (req: Request, res: Respons
     if (profit > 0) score += 100;
     score = Math.min(850, Math.max(300, score));
     const grade = score >= 750 ? 'A' : score >= 650 ? 'B' : score >= 550 ? 'C' : score >= 450 ? 'D' : 'F';
-    res.json({ success: true, score, grade, income: Number(income), expenses: Number(expenses), profit, ratio: Number(ratio).toFixed(2), recommendation: grade === 'A' ? 'Excellent — qualify for Land Bank Agri-Business loan' : grade === 'B' ? 'Good — qualify for standard agricultural credit' : 'Improve income consistency to strengthen credit profile' });
+    res.json({ success: true, score, grade, income: Number(income), expenses: Number(expenses), profit, ratio: Number(ratio).toFixed(2), recommendation: grade === 'A' ? 'Excellent  -  qualify for Land Bank Agri-Business loan' : grade === 'B' ? 'Good  -  qualify for standard agricultural credit' : 'Improve income consistency to strengthen credit profile' });
   } catch { res.status(500).json({ error: 'Score calculation failed' }); }
 });
 

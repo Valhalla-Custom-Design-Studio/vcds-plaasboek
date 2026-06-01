@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 export async function sendPasswordResetEmail(
   to: string,
   resetToken: string,
-  appName: string = 'Plaasboek™'
+  appName: string = 'Plaasboek(TM)'
 ): Promise<void> {
   const resetUrl = `${process.env.APP_URL || 'https://plaasboek.vcds.co.za'}/reset-password?token=${resetToken}`;
 

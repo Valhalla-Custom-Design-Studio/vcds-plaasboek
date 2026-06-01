@@ -95,7 +95,7 @@ export const OfflineSyncService = {
 
   async getRecords(token: string): Promise<FarmRecord[]> {
     try {
-      // Use the shared api instance — respects EXPO_PUBLIC_API_URL, never hardcodes a host
+      // Use the shared api instance  -  respects EXPO_PUBLIC_API_URL, never hardcodes a host
       const res = await api.get('/expenses', { headers: { Authorization: `Bearer ${token}` } });
       const items: FarmRecord[] = (res.data?.items || []).map((e: any) => ({
         id: e.id, type: 'expense' as const, amount: parseFloat(e.amount), category: e.category, description: e.description, date: e.date,

@@ -1,5 +1,5 @@
 /**
- * Stitch Money — SA Open Banking API
+ * Stitch Money  -  SA Open Banking API
  * Bank-grade: FNB, Absa, Standard Bank, Nedbank, Capitec
  * Free sandbox, production: per-transaction pricing
  * Use case: Bank statement import, payment initiation, account verification

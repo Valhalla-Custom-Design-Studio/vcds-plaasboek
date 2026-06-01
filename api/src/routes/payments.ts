@@ -47,7 +47,7 @@ paymentsRouter.post('/initiate', authenticate, requireApproved, async (req: Auth
   }
 });
 
-// PayFast ITN webhook — MUST be /notify (no auth)
+// PayFast ITN webhook  -  MUST be /notify (no auth)
 paymentsRouter.post('/notify', async (req: Request, res: Response): Promise<void> => {
   try {
     const data = req.body as Record<string, string>;

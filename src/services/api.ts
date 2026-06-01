@@ -18,7 +18,7 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
-// Handle 401 — clear token and reject
+// Handle 401  -  clear token and reject
 api.interceptors.response.use(
   (res) => res,
   async (err) => {

@@ -136,7 +136,7 @@ router.get('/events', authenticate, requireAdmin, async (req: Request, res: Resp
   } catch (e: any) { res.status(500).json({ error: e.message }); }
 });
 
-// ── ALERT WEBHOOK (engine → app) — no auth, use secret ────────────────────────
+// ── ALERT WEBHOOK (engine → app)  -  no auth, use secret ────────────────────────
 router.post('/alert-webhook', async (req: Request, res: Response) => {
   try {
     const secret = req.headers['x-internal-token'];

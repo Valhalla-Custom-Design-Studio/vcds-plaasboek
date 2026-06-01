@@ -96,7 +96,7 @@ router.post('/forgot-password', async (req: Request, res: Response) => {
     const expires = new Date(Date.now() + 3600000);
     await pool.query('UPDATE users SET reset_token=$1,reset_token_expires=$2 WHERE id=$3', [resetToken, expires, rows[0].id]);
     if (process.env.NODE_ENV !== 'development') {
-      await sendPasswordResetEmail(email.toLowerCase(), resetToken, 'Plaasboek™');
+      await sendPasswordResetEmail(email.toLowerCase(), resetToken, 'Plaasboek(TM)');
     }
     res.json({ success: true, message: 'If that email exists, a reset link was sent', debug_token: process.env.NODE_ENV === 'development' ? resetToken : undefined });
   } catch(e) { res.status(500).json({ success: false, message: 'Failed' }); }

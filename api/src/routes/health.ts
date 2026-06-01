@@ -11,7 +11,7 @@ healthRouter.get('/', async (_req: Request, res: Response) => {
   } catch {
     dbStatus = 'disconnected';
   }
-  // Always return 200 — Railway healthcheck must pass for service to start
+  // Always return 200  -  Railway healthcheck must pass for service to start
   res.json({
     success: true,
     status: 'healthy',

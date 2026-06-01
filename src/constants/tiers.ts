@@ -1,4 +1,4 @@
-// Plaasboek™ Subscription Tiers
+// Plaasboek(TM) Subscription Tiers
 export type PlaasboekTier = 'free' | 'pro' | 'platinum';
 
 export const PLAASBOEK_TIERS = {
@@ -11,8 +11,8 @@ export const PLAASBOEK_TIERS = {
     description_en: 'Start with basic farm record keeping.',
     features_af: ['Basiese plaasrekords', 'Handmatige invoer', 'Basiese verslae'],
     features_en: ['Basic farm records', 'Manual entry', 'Basic reports'],
-    locked_af: ['AgriScore™ AI', 'PatternLearn™', 'Kommoditeitspryse', 'Satellietdata', 'Gevorderde analise'],
-    locked_en: ['AgriScore™ AI', 'PatternLearn™', 'Commodity prices', 'Satellite data', 'Advanced analytics'],
+    locked_af: ['AgriScore(TM) AI', 'PatternLearn(TM)', 'Kommoditeitspryse', 'Satellietdata', 'Gevorderde analise'],
+    locked_en: ['AgriScore(TM) AI', 'PatternLearn(TM)', 'Commodity prices', 'Satellite data', 'Advanced analytics'],
   },
   pro: {
     id: 'pro' as PlaasboekTier,
@@ -22,29 +22,29 @@ export const PLAASBOEK_TIERS = {
     description_af: 'Bestuur jou plaas slimmer met AI-aangedrewe insigte.',
     description_en: 'Manage your farm smarter with AI-powered insights.',
     features_af: [
-      'Alles in Gratis', 'AgriScore™ AI', 'Kommoditeitspryse',
+      'Alles in Gratis', 'AgriScore(TM) AI', 'Kommoditeitspryse',
       'Gevorderde verslae', 'Veestapel bestuur', 'Uitgawe-analise',
     ],
     features_en: [
-      'Everything in Free', 'AgriScore™ AI', 'Commodity prices',
+      'Everything in Free', 'AgriScore(TM) AI', 'Commodity prices',
       'Advanced reports', 'Livestock management', 'Expense analytics',
     ],
-    locked_af: ['PatternLearn™ AI', 'Satellietdata', 'Weersintegrasie', 'Prioriteit ondersteuning'],
-    locked_en: ['PatternLearn™ AI', 'Satellite data', 'Weather integration', 'Priority support'],
+    locked_af: ['PatternLearn(TM) AI', 'Satellietdata', 'Weersintegrasie', 'Prioriteit ondersteuning'],
+    locked_en: ['PatternLearn(TM) AI', 'Satellite data', 'Weather integration', 'Priority support'],
   },
   platinum: {
     id: 'platinum' as PlaasboekTier,
     name_af: 'Platinum', name_en: 'Platinum',
     price: 249, color: '#C9A84C', badge: 'BESTE WAARDE',
     recommended: false,
-    description_af: 'Die volledige Plaasboek™ ervaring met PatternLearn™ AI.',
-    description_en: 'The full Plaasboek™ experience with PatternLearn™ AI.',
+    description_af: 'Die volledige Plaasboek(TM) ervaring met PatternLearn(TM) AI.',
+    description_en: 'The full Plaasboek(TM) experience with PatternLearn(TM) AI.',
     features_af: [
-      'Alles in Pro', 'PatternLearn™ AI', 'Satellietdata (Sentinel Hub)',
+      'Alles in Pro', 'PatternLearn(TM) AI', 'Satellietdata (Sentinel Hub)',
       'Weersintegrasie', 'Voorspellende analise', 'Prioriteit ondersteuning',
     ],
     features_en: [
-      'Everything in Pro', 'PatternLearn™ AI', 'Satellite data (Sentinel Hub)',
+      'Everything in Pro', 'PatternLearn(TM) AI', 'Satellite data (Sentinel Hub)',
       'Weather integration', 'Predictive analytics', 'Priority support',
     ],
     locked_af: [],
@@ -52,7 +52,7 @@ export const PLAASBOEK_TIERS = {
   },
 } as const;
 
-// Backward-compat alias — subscription screen uses PLAASBOEK_PLANS
+// Backward-compat alias  -  subscription screen uses PLAASBOEK_PLANS
 export const PLAASBOEK_PLANS = PLAASBOEK_TIERS;
 
 export const PLAASBOEK_SUBSCRIBE_ROUTE = '/subscription';

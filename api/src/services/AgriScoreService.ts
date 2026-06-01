@@ -1,7 +1,7 @@
 /**
- * AgriScore™ — SA-First Agricultural Creditworthiness Score
+ * AgriScore(TM)  -  SA-First Agricultural Creditworthiness Score
  * SA First: Real-time farm credit score for Land Bank / Absa AgriBusiness
- * Patent pending — VCDS™ IP Asset
+ * Patent pending  -  VCDS(TM) IP Asset
  */
 
 export interface AgriScoreInput {
@@ -135,6 +135,6 @@ export function calculateAgriScore(input: AgriScoreInput): AgriScoreResult {
       "Maintain consistent payment history on Plaasboek",
     ],
     calculated_at: new Date().toISOString(),
-    ip_watermark: "AgriScore™ — VCDS™ Patent Pending ZA2026/XXXXX",
+    ip_watermark: "AgriScore(TM)  -  VCDS(TM) Patent Pending ZA2026/XXXXX",
   };
 }

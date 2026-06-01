@@ -1,5 +1,5 @@
-// VCDS PayFast SDK — shared across all Wave 1 apps
-// Auto-generated — do not edit manually
+// VCDS PayFast SDK  -  shared across all Wave 1 apps
+// Auto-generated  -  do not edit manually
 // Source of truth: vcds-payfast-manager/src/config/payfast.config.ts
 
 const PAYFAST_API_URL = process.env.EXPO_PUBLIC_PAYFAST_API_URL || 'https://payfast.vcds.co.za';
@@ -67,7 +67,7 @@ class VCDSPayFastSDK {
     return data.allowed === true;
   }
 
-  // Initiate a PayFast payment — returns form URL + fields to POST
+  // Initiate a PayFast payment  -  returns form URL + fields to POST
   async initiatePayment(params: {
     tierId: string;
     userEmail: string;

@@ -81,8 +81,8 @@ router.post('/breach', authenticate, async (req: AuthRequest, res: Response) => 
       if (contact.push_token) {
         await sendPushNotification(
           contact.push_token, null,
-          `🚨 Geofence Breach — ${geofenceName}`,
-          `${breachType} detected${vehiclePlate ? ` — Plate: ${vehiclePlate}` : ''}. Check your farm immediately.`,
+          `🚨 Geofence Breach  -  ${geofenceName}`,
+          `${breachType} detected${vehiclePlate ? `  -  Plate: ${vehiclePlate}` : ''}. Check your farm immediately.`,
           { type: 'GEOFENCE_BREACH', geofenceId, breachType }
         ).catch(() => {});
         notified++;

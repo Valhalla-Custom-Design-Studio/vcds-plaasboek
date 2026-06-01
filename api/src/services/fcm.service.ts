@@ -1,6 +1,6 @@
 import admin from 'firebase-admin';
 
-// Lazy initialisation — avoids crashing at startup if Firebase env vars are absent.
+// Lazy initialisation  -  avoids crashing at startup if Firebase env vars are absent.
 // Push notifications will be silently skipped until vars are set in Render.
 function getMessaging(): admin.messaging.Messaging | null {
   const projectId   = process.env.FIREBASE_PROJECT_ID;
@@ -9,7 +9,7 @@ function getMessaging(): admin.messaging.Messaging | null {
 
   if (!projectId || !clientEmail || !privateKey) {
     if (!admin.apps.length) {
-      console.warn('[FCM] Firebase env vars missing — push notifications disabled.');
+      console.warn('[FCM] Firebase env vars missing  -  push notifications disabled.');
     }
     return null;
   }
@@ -57,8 +57,8 @@ export async function sendSOSToFamily(
     familyTokens.map(token =>
       sendPushNotification(
         null, token,
-        '🚨 SOS Alert — ' + elderName,
-        'Emergency: ' + sosType + (location ? ' — Tap to view location' : ''),
+        '🚨 SOS Alert  -  ' + elderName,
+        'Emergency: ' + sosType + (location ? '  -  Tap to view location' : ''),
         location ? { lat: String(location.lat), lng: String(location.lng), type: sosType } : { type: sosType }
       )
     )

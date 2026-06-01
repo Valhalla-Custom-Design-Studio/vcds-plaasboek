@@ -1,4 +1,4 @@
-// ODIN cache-bust 2026-05-28 — force Render Docker layer refresh
+// ODIN cache-bust 2026-05-28  -  force Render Docker layer refresh
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -44,7 +44,7 @@ app.use(helmet());
 app.use(cors({ origin: '*', methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'] }));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200, standardHeaders: true, legacyHeaders: false }));
 
-// Body parsing — raw for PayFast webhook
+// Body parsing  -  raw for PayFast webhook
 app.use('/api/payments/notify', express.raw({ type: 'application/x-www-form-urlencoded' }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -70,7 +70,7 @@ app.use('/api/sync', syncRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/records', recordsRouter);
 
-// Dead Man Switch cron — runs every 5 minutes
+// Dead Man Switch cron  -  runs every 5 minutes
 setInterval(async () => {
   try {
     const result = await pool.query(`
@@ -82,7 +82,7 @@ setInterval(async () => {
       await pool.query('UPDATE dead_mans_switches SET status=$1, "updatedAt"=NOW() WHERE id=$2', ['triggered', dms.id]);
       // Trigger SOS
       await pool.query(
-        "INSERT INTO sos_events (user_id, trigger_type, message, status) VALUES ($1,'dms','Dead Man Switch triggered — no heartbeat received','active')",
+        "INSERT INTO sos_events (user_id, trigger_type, message, status) VALUES ($1,'dms','Dead Man Switch triggered  -  no heartbeat received','active')",
         [dms.uid]
       );
       console.log(`DMS triggered for user ${dms.name} (${dms.uid})`);
