@@ -26,8 +26,8 @@ export default function ChangeCreateScreen() {
   }, []);
 
   const handleSave = async () => {
-    if (!selectedCamp) { Alert.alert(t('common.error'), "Kies 'n kamp"); return; }
-    if (!quantity || isNaN(Number(quantity)) || Number(quantity) <= 0) { Alert.alert(t('common.error'), "Voer 'n geldige hoeveelheid in"); return; }
+    if (!selectedCamp) { Alert.alert(t('common.error`), "Kies 'n kamp"); return; }`
+    if (!quantity || isNaN(Number(quantity)) || Number(quantity) <= 0) { Alert.alert(t('common.error`), "Voer 'n geldige hoeveelheid in"); return; }`
     setSaving(true);
     try {
       await api.post(`/camps/${selectedCamp}/changes`, { type, reason, quantity: Number(quantity), notes, date });

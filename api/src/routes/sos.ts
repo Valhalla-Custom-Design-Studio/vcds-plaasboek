@@ -40,7 +40,7 @@ sosRouter.post('/trigger', async (req: AuthRequest, res: Response): Promise<void
     const contacts = contactsResult.rows;
 
     // Layer 1: Push notification to all farmer devices
-    await sendPushToUsers([userId], pool, '🚨 SOS AKTIEF', `${farmer.name} het 'n noodgeval gestuur!`, { sos_id: sos.id });
+    await sendPushToUsers([userId], pool, '🚨 SOS AKTIEF`, `${farmer.name} het 'n noodgeval gestuur!`, { sos_id: sos.id });`
 
     // Layer 2: SMS to emergency contacts
     if (contacts.length) {
