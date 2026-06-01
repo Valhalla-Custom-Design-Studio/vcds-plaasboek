@@ -23,7 +23,7 @@ export default function LogCreateScreen() {
   }, []);
 
   const handleSave = async () => {
-    if (!selectedWorker) { Alert.alert(t('common.error`), "Kies 'n werker"); return; }`
+    if (!selectedWorker) { Alert.alert(t('common.error'), "Kies 'n werker"); return; }`
     setSaving(true);
     try {
       await api.post(`/workers/${selectedWorker}/logs`, {
