@@ -1,3 +1,4 @@
+# cache-bust: 20260601190721
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json tsconfig.json ./
