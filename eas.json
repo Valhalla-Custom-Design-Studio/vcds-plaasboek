@@ -8,22 +8,22 @@
       "developmentClient": true,
       "distribution": "internal",
       "android": {
-        "image": "latest",
+        "image": "sdk-53",
         "buildType": "apk"
       },
       "ios": {
-        "image": "latest",
+        "image": "sdk-53",
         "simulator": true
       }
     },
     "preview": {
       "distribution": "internal",
       "android": {
-        "image": "latest",
+        "image": "sdk-53",
         "buildType": "apk"
       },
       "ios": {
-        "image": "latest"
+        "image": "sdk-53"
       },
       "env": {
         "SENTRY_AUTH_TOKEN": "$SENTRY_AUTH_TOKEN",
@@ -33,11 +33,11 @@
     },
     "production": {
       "android": {
-        "image": "latest",
+        "image": "sdk-53",
         "buildType": "app-bundle"
       },
       "ios": {
-        "image": "latest"
+        "image": "sdk-53"
       },
       "env": {
         "SENTRY_AUTH_TOKEN": "$SENTRY_AUTH_TOKEN",
