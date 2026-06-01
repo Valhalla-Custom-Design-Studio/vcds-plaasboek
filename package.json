@@ -57,7 +57,8 @@
     "@types/react-dom": "^19.0.10",
     "@playwright/test": "^1.50.0",
     "@types/supertest": "^6.0.0",
-    "@types/express": "^5.0.0"
+    "@types/express": "^5.0.0",
+    "@babel/plugin-transform-unicode-escapes": "^7.25.9"
   },
   "overrides": {
     "follow-redirects": "^1.15.9",
@@ -68,5 +69,9 @@
     "undici": "^6.21.0",
     "braces": "^3.0.3",
     "micromatch": "^4.0.8"
+  },
+  "resolutions": {
+    "@babel/parser": "^7.25.9",
+    "@babel/core": "^7.25.9"
   }
 }

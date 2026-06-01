@@ -18,8 +18,8 @@ export default function ExpenseCreateScreen() {
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
-    if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) { Alert.alert(t('common.error'), "Voer 'n geldige bedrag in"); return; }`
-    if (!description.trim()) { Alert.alert(t('common.error'), "Voer 'n beskrywing in"); return; }`
+    if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) { Alert.alert(t('common.error'), "Voer 'n geldige bedrag in"); return; }
+    if (!description.trim()) { Alert.alert(t('common.error'), "Voer 'n beskrywing in"); return; }
     setSaving(true);
     try {
       await api.post('/expenses', { amount: Number(amount), category, description, date });
