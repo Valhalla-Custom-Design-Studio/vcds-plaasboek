@@ -24,7 +24,7 @@ export async function sendPasswordResetEmail(
     html: `
       <div style="font-family:sans-serif;max-width:480px;margin:0 auto;">
         <h2 style="color:#78350F;">${appName}</h2>
-        <p>Jy het `n wagwoord herstel versoek. Klik die skakel hieronder om 'n nuwe wagwoord in te stel:</p>`
+        <p>Jy het 'n wagwoord herstel versoek. Klik die skakel hieronder om 'n nuwe wagwoord in te stel:</p>
         <a href="${resetUrl}" style="display:inline-block;padding:12px 24px;background:#78350F;color:#fff;border-radius:8px;text-decoration:none;font-weight:bold;">
           Herstel Wagwoord
         </a>
